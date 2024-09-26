@@ -2,9 +2,7 @@
 
 Two different data generator programs are used to generate clustered datasets.
 
-"MDCGEN" (https://link.springer.com/article/10.1007/s00357-019-9312-3) is a very efficient for large scale high-dimensional data.
-
-However, if we want to achieve some arbitrary cluster shapes based on Bezier curves, we can use "Artifical Cluster" (https://doi.org/10.36227/techrxiv.19091330.v1). It should be noticed that I have no success in generating datasets >1 mio. data points.
+"MDCGEN" (https://link.springer.com/article/10.1007/s00357-019-9312-3) which is very efficient for large scale high-dimensional data and "Artifical Cluster" (https://doi.org/10.36227/techrxiv.19091330.v1) which is more flexible in terms of cluster shapes. It should be noticed that I have no success in generating datasets >1 mio. data points using "Artifical Cluster", so for large scale data, "MDCGEN" is the way to go, that why most of the datasets are generated using "MDCGEN".
 
 
 ## MDCGEN
