@@ -7,12 +7,12 @@ addpath(genpath('mdcgen/mdcgen/src'));
 
 %% Load config
 plot = true;  % true if generate plots
-config_file = 'datasets/artificalCluster/adaptive_grids_effect/dataset_A/config.mat';  % path to config file
-out_file = 'datasets/artificalCluster/adaptive_grids_effect/dataset_A/dataset.csv';    % output dataset file
+config_file = 'datasets/mdcgen/adaptive_grids_effect/dataset_A/config.mat';  % path to config file
+out_file = 'datasets/mdcgen/adaptive_grids_effect/dataset_A/dataset.csv';    % output dataset file
 load(config_file, 'config');
 
 %% Save config (can be used during testing/changes)
-save(config_file, 'config');
+%save(config_file, 'config');
 
 %% Generate data using MDCGen and config
 [result] = mdcgen(config);

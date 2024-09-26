@@ -1,2 +1,5 @@
 data-generator/mdcgen
 artificalCluster-1.0.jar
+data-generator/datasets
+!data-generator/datasets/*.mat
+!data-generator/datasets/*.config
