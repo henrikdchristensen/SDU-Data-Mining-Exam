@@ -16,12 +16,18 @@ if config.nDimensions > 10 || config.nDatapoints > 500000 % don't plot if dimens
     config.plot = false;
 end
 
-%% Assign noise dimensions for each cluster (each column corresponds to a cluster).
-noise_matrix = zeros(config.nDimsPerCluster, config.nClusters);
-for cluster = 1:config.nClusters
-    noise_matrix(1:config.nDimsPerCluster, cluster) = randperm(config.nDimensions, config.nDimsPerCluster)';
+%% Assign noise dimensions for each cluster
+noise_dims_per_cluster = config.nDimensions - config.nDimsPerCluster;
+if config.diffDimsForClusters % each column corresponds to a cluster
+    noise_matrix = zeros(noise_dims_per_cluster, config.nClusters);
+    for cluster = 1:config.nClusters
+        noise_matrix(1:noise_dims_per_cluster, cluster) = randperm(config.nDimensions, noise_dims_per_cluster)';
+    end
+    config.nNoise = noise_matrix;
+else
+    config.nNoise = noise_dims_per_cluster;
 end
-config.nNoise = noise_matrix;
+
 
 %% Generate data using MDCGen and config
 [result] = mdcgen(config);
