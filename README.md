@@ -25,6 +25,8 @@ A written extension script called `mdcgen_script.m` is used to save datasets wit
 
 This extension script program loads a config file from `datasets/mdcgen/<dataset>` and generates a dataset based on the config file.
 
+Did not have any success in generating datasets >4 mio. data points using on my local machine with 16GB RAM. Instead, I have used the MATLAB Online service to generate the large datasets.
+
 ## Artifical Cluster
 Download `artificalCluster-1.0.jar` file from https://github.com/wk1lian/ArtificalCluster and place it in the `data-generator` directory.
 

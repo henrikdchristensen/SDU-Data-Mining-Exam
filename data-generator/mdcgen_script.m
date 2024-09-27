@@ -1,18 +1,27 @@
 %% Clear
-clear
-warning on
+clear;
+clc;
+warning on;
 warning('backtrace', 'off');
 addpath(genpath('mdcgen/config_build/src/'));
-addpath(genpath('mdcgen/mdcgen/src'));
+addpath(genpath('mdcgen/mdcgen/src/'));
+rng(122);
 
 %% Load config
-plot = true;  % true if generate plots
-config_file = 'datasets/mdcgen/adaptive_grids_effect/dataset_A/config.mat';  % path to config file
-out_file = 'datasets/mdcgen/adaptive_grids_effect/dataset_A/dataset.csv';    % output dataset file
-load(config_file, 'config');
+config_file = 'datasets/mdcgen/database_size/test/config.mat';  % path to config file
+out_file = 'datasets/mdcgen/database_size/test/dataset.csv';    % output dataset file
 
-%% Save config (can be used during testing/changes)
-%save(config_file, 'config');
+load(config_file, 'config'); % "save(config_file, 'config')" can be used after making changes to config in workspace explorer.
+if config.nDimensions > 10 || config.nDatapoints > 500000 % don't plot if dimensions are high or too many points
+    config.plot = false;
+end
+
+%% Assign noise dimensions for each cluster (each column corresponds to a cluster).
+noise_matrix = zeros(config.nDimsPerCluster, config.nClusters);
+for cluster = 1:config.nClusters
+    noise_matrix(1:config.nDimsPerCluster, cluster) = randperm(config.nDimensions, config.nDimsPerCluster)';
+end
+config.nNoise = noise_matrix;
 
 %% Generate data using MDCGen and config
 [result] = mdcgen(config);
@@ -24,13 +33,13 @@ for k = 1:config.nClusters
 end
 labels_str(result.label == 0) = "noise";  % assign "noise" to outliers
 
-% Just remove the few points that are outside the [0, 1] range
+% Remove points that are outside the [0, 1] range
 valid_indices = all(result.dataPoints >= 0 & result.dataPoints <= 1, 2);
 filtered_data = result.dataPoints(valid_indices, :);
 filtered_labels = labels_str(valid_indices);  % use string labels
 
 %% Plot if requested
-if plot
+if config.plot
     marker_size = 10;
     labels = strcat('dim', string(1:config.nDimensions));
     data = filtered_data(:, 1:config.nDimensions);
