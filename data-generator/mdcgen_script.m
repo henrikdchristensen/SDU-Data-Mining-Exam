@@ -18,6 +18,7 @@ c = config;
 %% Don't plot if dimensions are high or too many points
 if c.nDimensions > 10 || c.nDatapoints > 500000
     c.plot = false;
+    save(configFile, 'config');
 end
 
 %% Assign noise dimensions to clusters
