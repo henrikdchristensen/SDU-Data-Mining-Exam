@@ -10,7 +10,6 @@ rng(122);
 %% Load config
 config_file = 'datasets/mdcgen/database_size/test/config.mat';  % path to config file
 out_file = 'datasets/mdcgen/database_size/test/dataset.csv';    % output dataset file
-
 load(config_file, 'config'); % "save(config_file, 'config')" can be used after making changes to config in workspace explorer.
 if config.nDimensions > 10 || config.nDatapoints > 500000 % don't plot if dimensions are high or too many points
     config.plot = false;
@@ -27,7 +26,6 @@ if config.diffDimsForClusters % each column corresponds to a cluster
 else
     config.nNoise = noise_dims_per_cluster;
 end
-
 
 %% Generate data using MDCGen and config
 [result] = mdcgen(config);
