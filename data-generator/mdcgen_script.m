@@ -7,7 +7,7 @@ addpath(genpath('mdcgen/mdcgen/src/'));
 rng(122); % set seed
 
 %% Dataset directory
-dir = 'datasets/mdcgen/database_size/1.5mio/';
+dir = 'datasets/mdcgen/test/';
 
 %% Load config
 configFile = strcat(dir, 'config.mat');
