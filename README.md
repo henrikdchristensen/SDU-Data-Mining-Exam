@@ -67,3 +67,17 @@ This will output each dimension's histogram values. Next, it shows the merged wi
 
 ## ELKI
 plot png 8.000x8.000 pixels.
+
+# Conda
+```bash
+conda env create -n mining
+```
+
+```bash
+conda activate mining
+```
+
+## Pip
+```bash
+pip install -r requirements.txt
+```
