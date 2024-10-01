@@ -4,9 +4,10 @@ warning off;
 warning('backtrace', 'off');
 addpath(genpath('mdcgen/config_build/src/'));
 addpath(genpath('mdcgen/mdcgen/src/'));
+maxPlotPoints = 10000;  % Set the maximum number of points to plot, if max is reached then sample them
 
 %% Dataset directory
-dir = 'datasets/mdcgen/accuracy/';
+dir = 'datasets/mdcgen/database_size/5mio/';
 
 %% Load config
 configFile = strcat(dir, 'config.mat');
@@ -14,8 +15,8 @@ outFileWithoutLabels = strcat(dir, 'data.txt');
 outFileWithLabels = strcat(dir, 'data_labels.csv');
 load(configFile, 'config'); % "save(configFile, 'config')" can be used after making changes to config in workspace explorer.
 
-%% Don't plot if dimensions are high or too many points
-if config.nDimensions > 10 || config.nDatapoints > 500000
+%% Don't plot if dimensions are high
+if config.nDimensions > 20
     config.plot = false;
     save(configFile, 'config');
 end
@@ -60,12 +61,29 @@ end
 labels(result.label == 0) = "noise";
 data = result.dataPoints;
 
+%% Write data to .csv file (comma delimited)
+% TODO: could be improved since the file with labels cuts of some precion of records
+writematrix(data, outFileWithoutLabels,'Delimiter','\t');
+dataAndLabels = [data, labels];
+writematrix(dataAndLabels, outFileWithLabels,'Delimiter',',');
+disp('Synthetic data is generated and saved.');
+
 %% Plot if requested
 if c.plot
-    markerSize = 20;  % marker size for cluster points
-    markerSizeNoise = markerSize / 8;  % smaller marker size for noise points
+    % Determine the total number of points
+    totalPoints = size(data, 1);
+    
+    % If more than maxPlotPoints, randomly sample
+    if totalPoints > maxPlotPoints
+        plotIndices = randperm(totalPoints, maxPlotPoints);  % Randomly select indices
+        data = data(plotIndices, :);  % Subset the data for plotting
+        labels = labels(plotIndices);  % Subset the labels for plotting
+    end
+    
+    markerSize = 20;  % Marker size for cluster points
+    markerSizeNoise = markerSize / 8;  % Smaller marker size for noise points
     dimLabels = strcat('dim', string(1:c.nDimensions));
-    clusterColors = lines(c.nClusters);  % distinct colors for each cluster
+    clusterColors = lines(c.nClusters);  % Distinct colors for each cluster
     figure;
     hold on;
     switch c.nDimensions
@@ -112,11 +130,3 @@ if c.plot
     end
     hold off;
 end
-
-%% Write data to .csv file (comma delimited)
-% TODO: could be improved since the file with labels cuts of some precion of records
-writematrix(data, outFileWithoutLabels,'Delimiter','\t');
-dataAndLabels = [data, labels];
-writematrix(dataAndLabels, outFileWithLabels,'Delimiter',',');
-
-disp('Synthetic data is generated and saved.');
