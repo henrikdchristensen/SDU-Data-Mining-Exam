@@ -32,7 +32,7 @@ def normalize_data(data):
     return list(zip(*normalized_data))
 
 # Function to process the file and add noise points within [0, 1], rounded to 3 decimals
-def add_noise(file_path, noise_percentage, include_labels, normalize):
+def add_noise(file_path, noise_percentage, include_labels):
     # Set this variable to either '\t' for tab or ' ' for space separation in the TXT file
     txt_separator = ' '  # '\t' for tab-based txt file or ' ' for space-separated file
 
@@ -55,42 +55,39 @@ def add_noise(file_path, noise_percentage, include_labels, normalize):
     # Calculate the number of noise points to generate
     num_noise_points = int(len(data) * noise_percentage)
 
-    # Modify the labels by adding "label" in front of each unique label number if labels are included
+    # Modify the labels by adding "cluster" in front of each unique label number if labels are included
     if include_labels:
         for row in data:
-            row[-1] = f"label{int(row[-1])}"  # Convert the label in the last column
+            row[-1] = f"cluster{int(row[-1])}"  # Convert the label in the last column
 
     noise_points = []
     for _ in range(num_noise_points):
         # Generate random noise point within [0, 1] for each dimension, rounded to 3 decimals
         noise_point = [str(round(random.uniform(0, 1), 3)) for _ in range(num_dimensions)]
-        noise_point.append('label_noise')  # Add the "noise" label as the last column
+        noise_point.append('noise')  # Add the "noise" label as the last column
         noise_points.append(noise_point)
 
-    # Generate new file names for the output files
+    # Generate new file name for the TXT output file
     base_name = os.path.splitext(file_path)[0]
     new_txt_output_path = base_name + '_fixed.txt'
-    new_csv_output_path = base_name + '_fixed.csv'
 
-    # Write the original + noise data to both CSV and TXT files
-    with open(new_csv_output_path, 'w') as csvfile, open(new_txt_output_path, 'w') as txtfile:
+    # Write the original + noise data to the TXT file
+    with open(new_txt_output_path, 'w') as txtfile:
         for row in data:
-            # Join the columns and write to files
+            # Join the columns and write to TXT file
             row = [str(value) for value in row]
-            csvfile.write(','.join(row) + '\n')
             txtfile.write(txt_separator.join(row) + '\n')
 
-        # Now add noise points to both files
+        # Now add noise points to the TXT file
         for noise_point in noise_points:
-            csvfile.write(','.join(noise_point) + '\n')
             txtfile.write(txt_separator.join(noise_point) + '\n')
 
-    print(f"Added {noise_percentage*100}% noise points successfully to '{new_csv_output_path}' and '{new_txt_output_path}'.")
+    print(f"Added {noise_percentage*100}% noise points successfully to '{new_txt_output_path}'.")
 
 # Main block to handle command-line arguments
 if __name__ == "__main__":
     # Set up argument parsing
-    parser = argparse.ArgumentParser(description="Add noise to a dataset and optionally normalize the data.")
+    parser = argparse.ArgumentParser(description="Add noise to a dataset.")
     parser.add_argument("file_path", help="The path to the input TXT file")
     parser.add_argument("noise_percentage", type=float, help="The percentage of noise points to add (0 to 1)")
     parser.add_argument("-l", "--labels", action="store_true", help="Include 'label' prefix in the labels column")
@@ -108,4 +105,4 @@ if __name__ == "__main__":
         sys.exit(1)
 
     # Call the function to process the file
-    add_noise(args.file_path, args.noise_percentage, args.labels, args.normalize)
+    add_noise(args.file_path, args.noise_percentage, args.labels)
