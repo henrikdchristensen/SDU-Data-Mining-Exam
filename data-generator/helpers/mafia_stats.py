@@ -1,46 +1,25 @@
-import re
 import pandas as pd
 from sklearn.metrics import normalized_mutual_info_score, adjusted_mutual_info_score, f1_score, jaccard_score, precision_score, adjusted_rand_score, rand_score, silhouette_score, completeness_score, homogeneity_score, v_measure_score
 from sklearn.preprocessing import LabelEncoder
 
-# File path
-file_path = "elki_test.txt"
+file_path = "composed.csv"
 
-cluster_data = []
-predicted_cluster = None
+# Read the file
+df = pd.read_csv(file_path, sep=',')
 
-with open(file_path, 'r') as file:
-    for line in file:
-        # Detect cluster sections in the file (e.g., # Cluster: Cluster 1)
-        cluster_match = re.match(r'# Cluster: Cluster (\d+)', line)
-        if cluster_match:
-            predicted_cluster = cluster_match.group(1)
-        # Regular expression to match lines that contain data (e.g., ID=...)
-        elif re.match(r'ID=\d+', line):
-            cluster_data.append((line.strip(), predicted_cluster))
-
-# Parse the extracted cluster data into a pandas DataFrame
-data = []
-for entry, cluster in cluster_data:
-    parts = re.split(r'\s+', entry)
-    true_label = parts[-1]  # true cluster label (e.g., 'cluster1', 'cluster2')
-    feature_values = [float(part) for part in parts[1:-1]]  # handle all features (everything between ID and true label)
-    data.append([parts[0], true_label, cluster] + feature_values)  # store ID, true label, predicted cluster, and feature values
-
-# Determine the number of features dynamically
-num_features = len(data[0]) - 3  # subtracting 3 columns: ID, true_label, predicted_cluster
-
-# Generate column names dynamically for the features
-column_names = ["ID", "true_label", "predicted_cluster"] + [f"feature_{i}" for i in range(1, num_features + 1)]
-
-# Convert to DataFrame
-df = pd.DataFrame(data, columns=column_names)
+# Extract the features dynamically based on column names (assuming format: ClusterID, Index, dim1, ..., True Label)
+features = df.columns[2:-1]  # Dimensions are in columns starting from dim1 to dimN
+true_labels = df['True Label']
+predicted_labels = df['ClusterID']  # Assuming ClusterID as predicted labels
 
 # Encode the labels into numeric form
 le_true = LabelEncoder()
-true_labels_encoded = le_true.fit_transform(df["true_label"])
+true_labels_encoded = le_true.fit_transform(true_labels)
 le_pred = LabelEncoder()
-predicted_labels_encoded = le_pred.fit_transform(df["predicted_cluster"])
+predicted_labels_encoded = le_pred.fit_transform(predicted_labels)
+
+# Extract feature values for silhouette score calculation
+feature_values = df[features].values
 
 # Calculate various metrics
 nmi_min = normalized_mutual_info_score(true_labels_encoded, predicted_labels_encoded, average_method='arithmetic')
@@ -56,8 +35,7 @@ jaccard_weighted_avg = jaccard_score(true_labels_encoded, predicted_labels_encod
 precision = precision_score(true_labels_encoded, predicted_labels_encoded, average='weighted')
 ari = adjusted_rand_score(true_labels_encoded, predicted_labels_encoded)
 rand = rand_score(true_labels_encoded, predicted_labels_encoded)
-features = df[[f"feature_{i}" for i in range(1, num_features + 1)]].values
-sil = silhouette_score(features, predicted_labels_encoded, metric='euclidean')
+sil = silhouette_score(feature_values, predicted_labels_encoded, metric='euclidean')
 com = completeness_score(true_labels_encoded, predicted_labels_encoded)
 hom = homogeneity_score(true_labels_encoded, predicted_labels_encoded)
 vm = v_measure_score(true_labels_encoded, predicted_labels_encoded)

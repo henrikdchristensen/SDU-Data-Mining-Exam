@@ -1,6 +1,3 @@
-sys
-os
-random
-argparse
-sklearn
+scikit-learn
 pandas
+numpy

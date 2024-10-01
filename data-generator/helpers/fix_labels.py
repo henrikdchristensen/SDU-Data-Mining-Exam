@@ -43,9 +43,8 @@ def add_noise(file_path, noise_percentage, include_labels, normalize):
     data_lines = [line for line in lines if not line.startswith("dimension")]
     data = [line.strip().split('\t') for line in data_lines if line.strip()]
 
-    # Normalize the data if requested
-    if normalize:
-        data = normalize_data(data)
+    # Normalize the data
+    data = normalize_data(data)
 
     # Convert each row (which is a tuple) to a list for modification
     data = [list(row) for row in data]
@@ -95,7 +94,6 @@ if __name__ == "__main__":
     parser.add_argument("file_path", help="The path to the input TXT file")
     parser.add_argument("noise_percentage", type=float, help="The percentage of noise points to add (0 to 1)")
     parser.add_argument("-l", "--labels", action="store_true", help="Include 'label' prefix in the labels column")
-    parser.add_argument("-n", "--normalize", action="store_true", help="Normalize the data to [0, 1] range")
 
     args = parser.parse_args()
 

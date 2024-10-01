@@ -4,37 +4,45 @@ warning off;
 warning('backtrace', 'off');
 addpath(genpath('mdcgen/config_build/src/'));
 addpath(genpath('mdcgen/mdcgen/src/'));
-rng(122); % set seed
 
 %% Dataset directory
-dir = 'datasets/mdcgen/test/';
+dir = 'datasets/mdcgen/accuracy/';
 
 %% Load config
 configFile = strcat(dir, 'config.mat');
-outFile = strcat(dir, 'dataset.csv');
+outFileWithoutLabels = strcat(dir, 'data.txt');
+outFileWithLabels = strcat(dir, 'data_labels.csv');
 load(configFile, 'config'); % "save(configFile, 'config')" can be used after making changes to config in workspace explorer.
-c = config;
 
 %% Don't plot if dimensions are high or too many points
-if c.nDimensions > 10 || c.nDatapoints > 500000
-    c.plot = false;
+if config.nDimensions > 10 || config.nDatapoints > 500000
+    config.plot = false;
     save(configFile, 'config');
 end
 
-%% Assign noise dimensions to clusters
-noiseDimsPerCluster = c.nDimensions - c.nDimsPerCluster;
-if c.diffDimsForClusters % each column corresponds to a cluster
-    noiseMatrix = zeros(noiseDimsPerCluster, c.nClusters);
-    for k = 1:c.nClusters % loop through each cluster
-        noiseMatrix(1:noiseDimsPerCluster, k) = randperm(c.nDimensions, noiseDimsPerCluster)';
-    end
-    c.nNoise = noiseMatrix;
-else
-    c.nNoise = noiseDimsPerCluster;
-end
+%% Copy config
+c = config;
 
-%% Determine number of outliers
+%% Set seed
+rng(c.seed); % set seed
+
+%% Determine number of outliers and subtract from "normal" datapoints
 c.nOutliers = round(c.nDatapoints * c.outliersPercentage);
+c.nDatapoints = c.nDatapoints - c.nOutliers;
+
+%% Assign noise dimensions to clusters
+if c.nNoise == 0 % if nNoise==0, then use the manual defined noise dims
+    noiseDimsPerCluster = c.nDimensions - c.nDimsPerCluster;
+    if c.diffDimsForClusters % each column corresponds to a cluster
+        noiseMatrix = zeros(noiseDimsPerCluster, c.nClusters);
+        for k = 1:c.nClusters % loop through each cluster
+            noiseMatrix(1:noiseDimsPerCluster, k) = randperm(c.nDimensions, noiseDimsPerCluster)';
+        end
+        c.nNoise = noiseMatrix;
+    else
+        c.nNoise = noiseDimsPerCluster;
+    end
+end
 
 %% Equal cluster mass
 if c.equalClusterMass
@@ -45,21 +53,12 @@ end
 [result] = mdcgen(c);
 
 %% Assign cluster labels ("cluster1", "cluster2", etc.") and "noise" for outliers (label 0)
-labelsStr = strings(size(result.label));
+labels = strings(size(result.label));
 for k = 1:c.nClusters
-    labelsStr(result.label == k) = strcat("cluster", num2str(k));  % assign cluster labels
+    labels(result.label == k) = strcat("cluster", num2str(k));  % assign cluster labels
 end
-labelsStr(result.label == 0) = "noise";
-
-%% Apply filtering of points outside [0, 1] range if requested
-if c.filtering
-    validIndices = all(result.dataPoints >= 0 & result.dataPoints <= 1, 2);
-    data = result.dataPoints(validIndices, :);
-    labels = labelsStr(validIndices);
-else
-    data = result.dataPoints;
-    labels = labelsStr;
-end
+labels(result.label == 0) = "noise";
+data = result.dataPoints;
 
 %% Plot if requested
 if c.plot
@@ -115,6 +114,9 @@ if c.plot
 end
 
 %% Write data to .csv file (comma delimited)
+% TODO: could be improved since the file with labels cuts of some precion of records
+writematrix(data, outFileWithoutLabels,'Delimiter','\t');
 dataAndLabels = [data, labels];
-writematrix(dataAndLabels, outFile);
+writematrix(dataAndLabels, outFileWithLabels,'Delimiter',',');
+
 disp('Synthetic data is generated and saved.');
