@@ -7,7 +7,7 @@ addpath(genpath('mdcgen/mdcgen/src/'));
 maxPlotPoints = 10000;  % Set the maximum number of points to plot, if max is reached then sample them
 
 %% Dataset directory
-dir = 'datasets/mdcgen/database_size/5mio/';
+dir = 'datasets/mdcgen/database_size/10mio/';
 
 %% Load config
 configFile = strcat(dir, 'config.mat');

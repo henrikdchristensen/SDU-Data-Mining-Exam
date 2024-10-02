@@ -66,7 +66,7 @@ def compose_single_file(csv_filename, data_folder, output_filename):
                 output_file.write(f"noise,{idx},{data_point_str},{label}\n")
 
 # Example usage
-csv_filename = 'data.csv'
+csv_filename = 'data_labels.csv'
 data_folder = '.'  # Folder with .dat and .idx files
 output_filename = 'composed.csv'
 
