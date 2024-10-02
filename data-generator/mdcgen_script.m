@@ -7,7 +7,7 @@ addpath(genpath('mdcgen/mdcgen/src/'));
 maxPlotPoints = 10000;  % Set the maximum number of points to plot, if max is reached then sample them
 
 %% Dataset directory
-dir = 'datasets/mdcgen/data_dimensionality/10d/';
+dir = 'datasets/mdcgen/data_dimensionality/20d/';
 
 %% Load config
 configFile = strcat(dir, 'config.mat');
@@ -32,18 +32,26 @@ c.nOutliers = round(c.nDatapoints * c.outliersPercentage);
 c.nDatapoints = c.nDatapoints - c.nOutliers;
 
 %% Assign noise dimensions to clusters
-if c.nNoise == 0 % if nNoise==0, then use the manual defined noise dims
+if c.nNoise == 0 % if nNoise==0, then use the manually defined noise dims
     noiseDimsPerCluster = c.nDimensions - c.nDimsPerCluster;
+    
     if c.diffDimsForClusters % each column corresponds to a cluster
-        noiseMatrix = zeros(noiseDimsPerCluster, c.nClusters);
-        for k = 1:c.nClusters % loop through each cluster
-            if c.maxDistinctDims > 0
-                noiseMatrix(1:noiseDimsPerCluster, k) = randperm(c.nDimensions, noiseDimsPerCluster)';
-            else
-                noiseMatrix(1:noiseDimsPerCluster, k) = randperm(c.nDimensions, noiseDimsPerCluster)';
+        noiseMatrix = zeros(noiseDimsPerCluster, c.nClusters); % Initialize noise matrix
+        if c.maxDistinctClusterDims > 0 && c.nDimensions > c.maxDistinctClusterDims
+            distinctClusterDims = randperm(c.nDimensions, c.maxDistinctClusterDims);
+            for k = 1:c.nClusters
+                clusterDims = randsample(distinctClusterDims, c.nDimsPerCluster);
+                noisePool = setdiff(1:c.nDimensions, clusterDims);
+                noiseMatrix(:, k) = randsample(noisePool, noiseDimsPerCluster)';
+            end
+        else
+            % If no maxDistinctClusterDims is set, use all dimensions for noise
+            for k = 1:c.nClusters
+                noiseMatrix(:, k) = randperm(c.nDimensions, noiseDimsPerCluster)';
             end
         end
         c.nNoise = noiseMatrix;
+        
     else
         c.nNoise = noiseDimsPerCluster;
     end
@@ -67,10 +75,11 @@ data = result.dataPoints;
 
 %% Write data to .csv file (comma delimited)
 % TODO: could be improved since the file with labels cuts of some precion of records
+disp('write data to file...');
 writematrix(data, outFileWithoutLabels,'Delimiter','\t');
 dataAndLabels = [data, labels];
 writematrix(dataAndLabels, outFileWithLabels,'Delimiter',',');
-disp('Synthetic data is generated and saved.');
+disp('synthetic data is generated and saved.');
 
 %% Plot if requested
 if c.plot
