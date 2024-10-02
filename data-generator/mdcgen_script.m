@@ -7,7 +7,7 @@ addpath(genpath('mdcgen/mdcgen/src/'));
 maxPlotPoints = 10000;  % Set the maximum number of points to plot, if max is reached then sample them
 
 %% Dataset directory
-dir = 'datasets/mdcgen/database_size/10mio/';
+dir = 'datasets/mdcgen/data_dimensionality/10d/';
 
 %% Load config
 configFile = strcat(dir, 'config.mat');
@@ -37,7 +37,11 @@ if c.nNoise == 0 % if nNoise==0, then use the manual defined noise dims
     if c.diffDimsForClusters % each column corresponds to a cluster
         noiseMatrix = zeros(noiseDimsPerCluster, c.nClusters);
         for k = 1:c.nClusters % loop through each cluster
-            noiseMatrix(1:noiseDimsPerCluster, k) = randperm(c.nDimensions, noiseDimsPerCluster)';
+            if c.maxDistinctDims > 0
+                noiseMatrix(1:noiseDimsPerCluster, k) = randperm(c.nDimensions, noiseDimsPerCluster)';
+            else
+                noiseMatrix(1:noiseDimsPerCluster, k) = randperm(c.nDimensions, noiseDimsPerCluster)';
+            end
         end
         c.nNoise = noiseMatrix;
     else
