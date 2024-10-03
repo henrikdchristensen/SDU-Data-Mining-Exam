@@ -8,7 +8,7 @@ maxPlotPoints = 10000;  % Set the maximum number of points to plot, if max is re
 maxPlotDims = 10; % Only plot the first 10 dimensions if available
 
 %% Dataset directory
-dir = 'datasets/mdcgen/cluster_dimensionality/26d/';
+dir = 'datasets/mdcgen/sensitivity/';
 
 %% Load config
 configFile = strcat(dir, 'config.mat');
