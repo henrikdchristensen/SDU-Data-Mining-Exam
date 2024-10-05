@@ -163,3 +163,11 @@ Same as above, just for the ELKI output when using the `ResultWriter`.
 
 ## .gitignore
 All datasets are ignored by git except from config files. This is to avoid committing large files to the repository.
+
+## Evaluation
+The main evaluation of the MAFIA algorithm as well as the comparison against CLIQUE and SUBCLU, can be seen in the Jupyter Notebook file `evaluation.ipynb`.
+
+The main evaluations performed:
+- Accuracy (clustering quality).
+- Scalability in terms of data set size, cluster dimensionality and data dimensionality.
+- Sensitivity against choice of parameters.
