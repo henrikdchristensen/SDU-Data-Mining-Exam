@@ -10,7 +10,7 @@ maxPlotPoints = 10000;  % max. number of points to plot, if max is reached, we s
 maxPlotDims = 10; % only plot first 10 dimensions (if available)
 
 %% Dataset directory
-dir = 'datasets/mdcgen/database_size/20mio/';
+dir = 'datasets/mdcgen/cluster_dimensionality/500k/20d/';
 
 %% Load config
 configFile = strcat(dir, 'config.mat');
