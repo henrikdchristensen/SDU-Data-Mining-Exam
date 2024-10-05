@@ -4,35 +4,37 @@ warning off;
 warning('backtrace', 'off');
 addpath(genpath('mdcgen/config_build/src/'));
 addpath(genpath('mdcgen/mdcgen/src/'));
-maxPlotPoints = 10000;  % Set the maximum number of points to plot, if max is reached then sample them
-maxPlotDims = 10; % Only plot the first 10 dimensions if available
+
+%% General settings
+maxPlotPoints = 10000;  % max. number of points to plot, if max is reached, we sample
+maxPlotDims = 10; % only plot first 10 dimensions (if available)
 
 %% Dataset directory
-dir = 'datasets/mdcgen/sensitivity/';
+dir = 'datasets/mdcgen/database_size/20mio/';
 
 %% Load config
 configFile = strcat(dir, 'config.mat');
 outFileWithoutLabels = strcat(dir, 'data.txt');
 outFileWithLabels = strcat(dir, 'data_labels.csv');
 outFileNoiseMatrix = strcat(dir, 'noise.csv');
-load(configFile, 'config'); % "save(configFile, 'config')" can be used after making changes to config in workspace explorer.
+load(configFile, 'config');
+% "save(configFile, 'config')" can be used after making changes to config in workspace explorer.
 
 %% Copy config
 c = config;
 
 %% Set seed
-rng(c.seed); % set seed
+rng(c.seed);
 
-%% Determine number of outliers and subtract from "normal" datapoints
+%% Determine number of outliers and subtract from cluster datapoints
 c.nOutliers = round(c.nDatapoints * c.outliersPercentage);
 c.nDatapoints = c.nDatapoints - c.nOutliers;
 
 %% Assign noise dimensions to clusters
-if c.nNoise == 0 % if nNoise==0, then use the manually defined noise dims
+if c.nNoise == 0 % if nNoise==0, use manually defined noise dimensions
     noiseDimsPerCluster = c.nDimensions - c.nDimsPerCluster;
-    
     if c.diffDimsForClusters % each column corresponds to a cluster
-        noiseMatrix = zeros(noiseDimsPerCluster, c.nClusters); % Initialize noise matrix
+        noiseMatrix = zeros(noiseDimsPerCluster, c.nClusters);
         if c.maxDistinctClusterDims > 0 && c.nDimensions > c.maxDistinctClusterDims
             distinctClusterDims = randperm(c.nDimensions, c.maxDistinctClusterDims);
             for k = 1:c.nClusters
@@ -40,8 +42,7 @@ if c.nNoise == 0 % if nNoise==0, then use the manually defined noise dims
                 noisePool = setdiff(1:c.nDimensions, clusterDims);
                 noiseMatrix(:, k) = randsample(noisePool, noiseDimsPerCluster)';
             end
-        else
-            % If no maxDistinctClusterDims is set, use all dimensions for noise
+        else % if no maxDistinctClusterDims is set, use all dimensions for noise
             for k = 1:c.nClusters
                 noiseMatrix(:, k) = randperm(c.nDimensions, noiseDimsPerCluster)';
             end
@@ -52,15 +53,14 @@ if c.nNoise == 0 % if nNoise==0, then use the manually defined noise dims
         c.nNoise = noiseDimsPerCluster;
     end
 end
-
-writematrix(sort(c.nNoise), outFileNoiseMatrix);
+writematrix(sort(c.nNoise), outFileNoiseMatrix); % save noise matrix
 
 %% Equal cluster mass
 if c.equalClusterMass
     c.minimumClusterMass = floor(c.nDatapoints / c.nClusters);
 end
 
-%% Generate data using MDCGen and config
+%% Generate data based on config
 [result] = mdcgen(c);
 
 %% Assign cluster labels ("cluster1", "cluster2", etc.") and "noise" for outliers (label 0)
@@ -81,29 +81,23 @@ disp('synthetic data is generated and saved.');
 
 %% Plot if requested
 if c.plot
-    % Determine the total number of points
-    totalPoints = size(data, 1);
-    
-    % Limit data to the first XX dimensions for plotting
-    dataToPlot = data(:, 1:min(maxPlotDims, c.nDimensions));   % Select only the first 10 dimensions
-    dimLabels = strcat('dim', string(1:maxPlotDims));  % Update the dimension labels
-    
-    % If more than maxPlotPoints, randomly sample
-    if totalPoints > maxPlotPoints
-        plotIndices = randperm(totalPoints, maxPlotPoints);  % Randomly select indices
-        dataToPlot = dataToPlot(plotIndices, :);  % Subset the data for plotting
-        labels = labels(plotIndices);  % Subset the labels for plotting
+    totalPoints = size(data, 1); % determine total number of points
+    dataToPlot = data(:, 1:min(maxPlotDims, c.nDimensions)); % select only the first 10 dimensions
+    dimLabels = strcat('dim', string(1:maxPlotDims)); % update the dimension labels
+    if totalPoints > maxPlotPoints % if more than maxPlotPoints, randomly sample
+        plotIndices = randperm(totalPoints, maxPlotPoints); % randomly select indices
+        dataToPlot = dataToPlot(plotIndices, :); % subset the data for plotting
+        labels = labels(plotIndices); % subset the labels for plotting
     end
-    
-    markerSize = 20;  % Marker size for cluster points
-    markerSizeNoise = markerSize / 8;  % Smaller marker size for noise points
-    clusterColors = lines(c.nClusters);  % Distinct colors for each cluster
+    markerSize = 20; % marker size for cluster points
+    markerSizeNoise = markerSize / 8; % smaller marker size for noise points
+    clusterColors = lines(c.nClusters); % distinct colors for each cluster (can only be done in <=3d)
     figure;
     hold on;
     
     % Handle different dimensionalities (only plot the first 10 dimensions)
     switch maxPlotDims
-        case 2
+        case 2 % 2d
             % 2D plot for the first two dimensions
             for k = 1:c.nClusters
                 clusterPoints = dataToPlot(labels == strcat("cluster", num2str(k)), :);
@@ -116,9 +110,7 @@ if c.plot
             xlabel('dim1');
             ylabel('dim2');
             legend('show');
-            
-        case 3
-            % 3D plot for the first three dimensions
+        case 3 % 3d
             for k = 1:c.nClusters
                 clusterPoints = dataToPlot(labels == strcat("cluster", num2str(k)), :);
                 scatter3(clusterPoints(:, 1), clusterPoints(:, 2), clusterPoints(:, 3), markerSize, clusterColors(k, :), 'filled', 'DisplayName', ['Cluster ' num2str(k)]);
@@ -132,9 +124,7 @@ if c.plot
             ylabel('dim2');
             zlabel('dim3');
             legend('show');
-            
-        otherwise
-            % For dimensions >3, use plotmatrix, but only the first 10 dimensions
+        otherwise % >3d
             [h, ax] = plotmatrix(dataToPlot);
             for i = 1:maxPlotDims
                 xlabel(ax(maxPlotDims, i), dimLabels{i});

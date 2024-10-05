@@ -70,7 +70,7 @@ plot png 8.000x8.000 pixels.
 
 # Conda
 ```bash
-conda env create -n mining
+conda env create -n mining python=3.12
 ```
 
 ```bash
