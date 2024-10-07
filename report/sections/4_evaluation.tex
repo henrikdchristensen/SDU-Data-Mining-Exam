@@ -1,0 +1,21 @@
+\section{Evaluation}
+The evaluation of the clustering algorithms was performed on a Intel i7 1.70 GHz processor (12th gen.) with 16 GB of RAM running Windows 11.
+
+The evaluation of MAFIA was performed using GPUMAFIA, which was installed on a virtual machine using VirtualBox. The virtual machine was configured with 4 CPUs and 4 GB of RAM. The operating system was Ubuntu 24.04.1 LTS. In contrast, CLIQUE and SUBCLU were evaluated on the main machine (host) using ELKI. Thus, one should be careful to compare the results of MAFIA with those of CLIQUE and SUBCLU, as the execution environment may affect the results, however, their growth rate can be compared.
+
+The evaluation project can be found at: \url{https://github.com/henrikdchristensen/SDU-Data-Mining-Exam}, where additional tests can be found as well a more detailed description of how to generate the data sets used in this project.
+
+\subsection{Data set generation}
+Two different data generation tools were used to create clustered datasets. The first is MDCGen, which is very efficient for large-scale, high-dimensional data using MATLAB.
+
+The other used was \textit{Artificial Cluster} using Java, which is more flexible in terms of cluster shapes (e.g., creation of Bezier curves). However, note that I have not been successful in generating datasets larger than 1 million data points with this program. So, for most cases, MDCGen is used.
+
+\subsection{Experimental Results}
+\subsubsection{Clustering Quality}
+2 Clusters = OK
+4 CLusters = NOT DETECTED.
+
+\subsubsection{Scalability with Data Set Size}
+\subsubsection{Scalability with Data Dimensionality and Cluster Dimensionality}
+I was not able to reproduce the results found in the Subclu article where little information about the synthetic data set is provided. Using the same parameters for all the tests seems a little weird as the behaviour of the algorithm is completly different as well as its performance. Furthermore, I could not use a data set with 100,000 data points, so for testing Subclu 20,000 points is suggested.
+\subsubsection{Real Data Sets}

@@ -1,0 +1,47 @@
+% % LLNCS macro package for Springer Computer Science proceedings;
+% Version 2.21 of 2022/01/12
+%
+\documentclass[runningheads]{llncs}
+%
+\usepackage[T1]{fontenc}
+% T1 fonts will be used to generate the final print and online PDFs,
+% so please use T1 fonts in your manuscript whenever possible.
+% Other font encondings may result in incorrect characters.
+%
+\usepackage{graphicx, color}
+%
+\usepackage{hyperref}
+\renewcommand\UrlFont{\color{blue}\rmfamily}
+\urlstyle{rm}
+%
+
+\begin{document}
+    \title{MAFIA: An Adaptive Grid-Based Subspace Clustering Approach}
+    %
+    % Use \titlerunning{Abbreviated paper title}, if title is too long for the running head. Here, we can set an abbreviated paper title.
+    %
+    \author{Henrik Daniel Christensen\orcidID{hench13@student.sdu.dk}}
+    \authorrunning{H. D. Christensen} % first names are abbreviated in the running head.
+    %
+    \institute{University of Southern Denmark, SDU\\\textit{Department of Mathematics and Computer Science}}
+    %
+    \maketitle % typeset the header of the contribution
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \input{sections/0_abstract}             % 0.4
+    \input{sections/1_introduction}         % 1
+    \input{sections/2_grid_and_density}  % 2
+    \input{sections/3_mafia}                % 2
+    \input{sections/4_evaluation}           % 3
+    \input{sections/5_discussion}           % 3
+    \input{sections/6_conclusion}           % 0.5
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %\input{base/credits}
+    
+    
+    \bibliographystyle{base/splncs04}
+    \bibliography{base/references}
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

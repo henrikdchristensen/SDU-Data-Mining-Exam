@@ -1,6 +1,6 @@
 # README
 
-This project uses two different data generation programs to create clustered datasets:
+Two different data generation tools is used to create clustered datasets:
 
 - Most datasets are generated using **MDCGen** ([Link](https://link.springer.com/article/10.1007/s00357-019-9312-3)), which is very efficient for large-scale, high-dimensional data using MATLAB.
 - The other program used is **Artificial Cluster** ([Link](https://doi.org/10.36227/techrxiv.19091330.v1)), which offers more flexibility in terms of cluster shapes (e.g., creation of Bezier curves). However, note that I have not been successful in generating datasets larger than 1 million data points with this program. For larger datasets, use **MDCGen**.
@@ -13,7 +13,7 @@ This project uses two different data generation programs to create clustered dat
 
 1. Install MATLAB (R2016 or higher).
 2. Download **mdcgen-matlab** from [this repository](https://github.com/CN-TU/mdcgen-matlab) and unzip it (the version used in this project is from commit `9b201f9` on Sep 16, 2019).
-3. Place the contents of the unzipped folder in the project directory under `mdcgen`.
+3. Place the contents of the unzipped folder in the project directory under `src/mdcgen`.
 4. (Optional) You can remove unnecessary files and folders, except for `mdcgen` and `config_build`. Make sure to keep `mdc_help.m`.
 5. The folder structure should look like this:
     ```bash
@@ -65,7 +65,7 @@ nNoise = [3,1;3,1];
 
 1. Install Java 8 or later. Verify by running `java -version` in the terminal.
 2. Download the `artificalCluster-1.0.jar` file from [this repository](https://github.com/wk1lian/ArtificalCluster) and place it in the root directory (version used: commit `27d7586`, Jan 19, 2024).
-3. Generate a dataset based on a config file from the `datasets/artificalCluster` folder by running:
+3. Generate a dataset based on a config file from the `src/datasets/artificalCluster` folder by running in the folder `src`:
     ```bash
     java -jar artificalCluster-1.0.jar -rg="datasets/artificalCluster/accuracy/bezier/bez.config" -o="datasets/artificalCluster/accuracy/bezier/bez.txt" && python helpers/fix_labels_ac.py datasets/artificalCluster/accuracy/bezier/bez.txt -l 0.1
     ```
@@ -206,4 +206,4 @@ The primary evaluation of the MAFIA algorithm, along with comparisons to CLIQUE 
    - Mac: MacTeX
    - Linux: TeX Live
 2.  Install pandoc (https://pandoc.org/), make sure it can be found using `pandoc --version`. Otherwise, try to re-open terminal.
-3.  Convert to pdf by running the following command: `jupyter nbconvert --to pdf evaluation.ipynb`. 
+3.  Convert to pdf by running the following command from the `src` folder: `jupyter nbconvert --to pdf evaluation.ipynb`. 
