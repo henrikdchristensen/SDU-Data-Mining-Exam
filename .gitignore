@@ -7,17 +7,8 @@ src/artificalCluster-1.0.jar
 
 ## LaTeX ##
 *.aux
-*.lof
 *.log
-*.lot
-*.fls
 *.out
-*.toc
-*.fmt
-*.fot
-*.cb
-*.cb2
-.*.lb
 *.synctex.gz
 *.bbl
 *.blg
