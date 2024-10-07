@@ -114,7 +114,7 @@ GPUMAFIA is installed on Ubuntu 24.04.1 LTS in a Virtual Box. Follow these steps
     sudo apt update
     sudo apt upgrade
     ```
-5. mount the shared folder (called `datasets` in this case) to the home directory:
+5. mount the shared folder (called `src/datasets` in this case) to the home directory:
     ```bash
     sudo mount -t vboxsf -o uid=1000,gid=1000 datasets /home/user/vboxshare
     ```
@@ -179,7 +179,7 @@ python helpers/fix_labels_ac.py <data-file>
 ```
 
 ### compose_outputs_mafia.py
-Combine multiple GPUMAFIA cluster files into a single output file:
+Combine multiple GPUMAFIA cluster files into a single output file. Just place this python in the same directory as the output files and run:
 ```bash
 python compose_outputs_mafia.py
 ```

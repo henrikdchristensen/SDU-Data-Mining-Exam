@@ -12,3 +12,5 @@ src/artificalCluster-1.0.jar
 *.synctex.gz
 *.bbl
 *.blg
+*.fdb_latexmk
+*.fls

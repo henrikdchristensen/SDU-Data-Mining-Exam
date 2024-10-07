@@ -1,21 +1,60 @@
 \section{Evaluation}
 The evaluation of the clustering algorithms was performed on a Intel i7 1.70 GHz processor (12th gen.) with 16 GB of RAM running Windows 11.
 
-The evaluation of MAFIA was performed using GPUMAFIA, which was installed on a virtual machine using VirtualBox. The virtual machine was configured with 4 CPUs and 4 GB of RAM. The operating system was Ubuntu 24.04.1 LTS. In contrast, CLIQUE and SUBCLU were evaluated on the main machine (host) using ELKI. Thus, one should be careful to compare the results of MAFIA with those of CLIQUE and SUBCLU, as the execution environment may affect the results, however, their growth rate can be compared.
+The evaluation of MAFIA was performed using \textit{GPUMAFIA} \cite{gpumafia}, which was installed on a virtual machine(VM) running Ubuntu 24.04.1 LTS using VirtualBox. The VM was configured with 4 CPUs and 4 GB of RAM. In contrast, CLIQUE and SUBCLU were evaluated on the main machine (host) using ELKI \cite{elki}. Thus, one should be careful to compare the results of MAFIA with those of CLIQUE and SUBCLU, as the execution environment may affect the results, however, their growth rate can be compared.
 
-The evaluation project can be found at: \url{https://github.com/henrikdchristensen/SDU-Data-Mining-Exam}, where additional tests can be found as well a more detailed description of how to generate the data sets used in this project.
+The evaluation project can be found at the GitHub repository: \url{https://github.com/henrikdchristensen/SDU-Data-Mining-Exam}, where additional tests can be found as well as detailed descriptions of how to generate the data sets and how to install and use GPUMAFIA.
 
 \subsection{Data set generation}
-Two different data generation tools were used to create clustered datasets. The first is MDCGen, which is very efficient for large-scale, high-dimensional data using MATLAB.
+The aim for synthetic data generation was to be able to produce similar data sets as discussed in \cite{mafia}. Using \textit{MDCGen} it was possible to create large high-dimensional axis-parallel clustered data sets. Here, for example, the number of dimensions, number of clusters, number of data points and percentage of noise can be specified. Furthermore, it was possible to determine for each cluster which of the dimensions that are noise. Also, all dimensions ranges from 0 to 1, as assumed for both MAFIA and SUBCLU.
 
-The other used was \textit{Artificial Cluster} using Java, which is more flexible in terms of cluster shapes (e.g., creation of Bezier curves). However, note that I have not been successful in generating datasets larger than 1 million data points with this program. So, for most cases, MDCGen is used.
+However, to see the difference between CLIQUE and MAFIA against the SUBCLU algorithm, a data set containing a Bezier-shaped cluster was created using \textit{Artificial Cluster} (AC). Also, a home-made data set containing a plus-shaped cluster was created as discussed in \cite{mafia}
 
 \subsection{Experimental Results}
-\subsubsection{Clustering Quality}
-2 Clusters = OK
-4 CLusters = NOT DETECTED.
 
 \subsubsection{Scalability with Data Set Size}
+Figure \ref{fig:dataset_size_vs_runtime} shows the scalability of the three algorithms with increasing data set size. The data set contains 20 dimensions with 5 clusters in 5 different subspaces with 10\% noise records. The data set size ranges from 10k to 15mio records. However, only MAFIA was able to handle the full amount of data. CLIQUE was able to handle up to 7mio records, while SUBCLU was only able to handle up to 200k records. The results clearly shows that MAFIA is the most scalable algorithm, followed by CLIQUE and SUBCLU.
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.6]{figures/dataset_size_vs_runtime.png}
+    \caption{Scalability with increasing data set size.}
+    \label{fig:dataset_size_vs_runtime}
+\end{figure}
+
+\subsubsection{Clustering Accuracy}
+Different data sets were generated to test the clustering accuracy of the algorithms.
+
+The first data set were a 2-dimensional data set containing a single cluster formed as a plus, see Figure \ref{fig:accuracy_plus}. Same results were reproduced as found in \cite{mafia}. 
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.6]{figures/accuracy_plus.png}
+    \caption{Plus-shaped cluster.}
+    \label{fig:accuracy_plus}
+\end{figure}
+
 \subsubsection{Scalability with Data Dimensionality and Cluster Dimensionality}
-I was not able to reproduce the results found in the Subclu article where little information about the synthetic data set is provided. Using the same parameters for all the tests seems a little weird as the behaviour of the algorithm is completly different as well as its performance. Furthermore, I could not use a data set with 100,000 data points, so for testing Subclu 20,000 points is suggested.
+Figure \ref{fig:dataset_dimensionality_vs_runtime} shows the scalability of the CLIQUE and MAFIA with increasing data set dimensionality. The data set contains 1 mio. records with 5 clusters in 5 different subspaces and 10\% noise records. The data set dimensionality ranges from 10 to 100 dimensions. The results clearly shows that MAFIA is the most scalable algorithm.
+
+Figure \ref{fig:cluster_dimensionality_vs_runtime} shows the scalability of the CLIQUE and MAFIA with increasing cluster dimensionality. The data set contains 500k records with 5 clusters in 5 different subspaces with 10\% noise records. The data set dimensionality is 20 dimensions. The cluster dimensionality ranges from 10 to 100 dimensions. The results clearly shows that MAFIA is the most scalable algorithm.
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.6]{figures/data_dimensionality_vs_runtime.png}
+    \caption{Scalability with increasing data set dimensionality.}
+    \label{fig:dataset_dimensionality_vs_runtime}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.6]{figures/cluster_dimensionality_vs_runtime.png}
+    \caption{Scalability with increasing cluster dimensionality.}
+    \label{fig:cluster_dimensionality_vs_runtime}
+\end{figure}
+
+The results reported for SUBCLU \cite{subclu} were also tried to be replicated, however, similar results were not achieved.
+
+
+
+
 \subsubsection{Real Data Sets}
