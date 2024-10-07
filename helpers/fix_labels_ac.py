@@ -52,6 +52,10 @@ def add_noise(file_path, noise_percentage, include_labels):
     # Get the number of dimensions (excluding the label column)
     num_dimensions = len(data[0]) - 1
 
+    # Remove the label column if labels are not included
+    if not include_labels:
+        data = [row[:-1] for row in data]
+
     # Calculate the number of noise points to generate
     num_noise_points = int(len(data) * noise_percentage)
 
@@ -64,7 +68,8 @@ def add_noise(file_path, noise_percentage, include_labels):
     for _ in range(num_noise_points):
         # Generate random noise point within [0, 1] for each dimension, rounded to 3 decimals
         noise_point = [str(round(random.uniform(0, 1), 3)) for _ in range(num_dimensions)]
-        noise_point.append('noise')  # Add the "noise" label as the last column
+        if include_labels:
+            noise_point.append('noise')  # Add the "noise" label as the last column
         noise_points.append(noise_point)
 
     # Generate new file name for the TXT output file

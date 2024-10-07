@@ -114,9 +114,9 @@ GPUMAFIA is installed on Ubuntu 24.04.1 LTS in a Virtual Box. Follow these steps
     sudo apt update
     sudo apt upgrade
     ```
-5. mount the shared folder:
+5. mount the shared folder (called `datasets` in this case) to the home directory:
     ```bash
-    sudo mount -t vboxsf -o uid=1000,gid=1000 data /home/user/vboxshare
+    sudo mount -t vboxsf -o uid=1000,gid=1000 datasets /home/user/vboxshare
     ```
 6. Install GCC and Make:
     ```bash
@@ -199,3 +199,11 @@ The primary evaluation of the MAFIA algorithm, along with comparisons to CLIQUE 
 - Accuracy (clustering quality)
 - Scalability (dataset size, dimensionality, and clusters)
 - Sensitivity to parameter choices
+
+### Export to pdf
+1. Install a LaTeX distribution.
+   - Windows: MikTeX
+   - Mac: MacTeX
+   - Linux: TeX Live
+2.  Install pandoc (https://pandoc.org/), make sure it can be found using `pandoc --version`. Otherwise, try to re-open terminal.
+3.  Convert to pdf by running the following command: `jupyter nbconvert --to pdf evaluation.ipynb`. 
