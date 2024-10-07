@@ -103,25 +103,40 @@ ELKI does not provide the MAFIA algorithm, but you can use the `algorithm.NullAl
 
 GPUMAFIA is installed on Ubuntu 24.04.1 LTS in a Virtual Box. Follow these steps for installation:
 
-1. Install GCC and Make:
+1. Download Virtual Box from [here](https://www.virtualbox.org/wiki/Downloads).
+2. Download Ubuntu 24.04.1 LTS from [here](https://releases.ubuntu.com/24.04/).
+3. Install Ubuntu on Virtual Box.
+   1. Add a new virtual machine.
+   2. Select the downloaded Ubuntu ISO file.
+   3. Specs: 4 CPUs, 4 GB RAM, 50 GB storage and select a shared folder.
+4. After installation, update Ubuntu:
+    ```bash
+    sudo apt update
+    sudo apt upgrade
+    ```
+5. mount the shared folder:
+    ```bash
+    sudo mount -t vboxsf -o uid=1000,gid=1000 data /home/user/vboxshare
+    ```
+6. Install GCC and Make:
     ```bash
     sudo apt install gcc make
     ```
-2. Install GCC 4.8 (`gcc48-c++_4.8.4-2ubuntu14_amd64.deb`) from the `utils` directory.
-3. Use `update-alternatives` to manage multiple GCC versions (optional):
+7. Install GCC 4.8 (`gcc48-c++_4.8.4-2ubuntu14_amd64.deb`) from the `utils` directory.
+8. Use `update-alternatives` to manage multiple GCC versions (optional):
     ```bash
     sudo update-alternatives --install /usr/bin/gcc gcc /usr/local/bin/gcc48 50
     sudo update-alternatives --install /usr/bin/g++ g++ /usr/local/bin/g++48 50
     sudo update-alternatives --config gcc
     sudo update-alternatives --config g++
     ```
-4. Modify `makefile.def` to use `g++`.
-5. Build and install:
+9. Modify `makefile.def` to use `g++`.
+10. Build and install:
     ```bash
     sudo make
     sudo make install
     ```
-6. Run GPUMAFIA using:
+11. Run GPUMAFIA using:
     ```bash
     cppmafia <data-file> <commands>
     ```
