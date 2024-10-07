@@ -1,5 +1,5 @@
-data-generator/mdcgen
-data-generator/datasets/**/*.txt
-data-generator/datasets/**/*.csv
+mdcgen
+datasets/**/*.txt
+datasets/**/*.csv
 artificalCluster-1.0.jar
 *.asv

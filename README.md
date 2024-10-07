@@ -64,7 +64,7 @@ nNoise = [3,1;3,1];
 ### Installation
 
 1. Install Java 8 or later. Verify by running `java -version` in the terminal.
-2. Download the `artificalCluster-1.0.jar` file from [this repository](https://github.com/wk1lian/ArtificalCluster) and place it in the `data-generator` directory (version used: commit `27d7586`, Jan 19, 2024).
+2. Download the `artificalCluster-1.0.jar` file from [this repository](https://github.com/wk1lian/ArtificalCluster) and place it in the root directory (version used: commit `27d7586`, Jan 19, 2024).
 3. Generate a dataset based on a config file from the `datasets/artificalCluster` folder by running:
     ```bash
     java -jar artificalCluster-1.0.jar -rg="datasets/artificalCluster/accuracy/bezier/bez.config" -o="datasets/artificalCluster/accuracy/bezier/bez.txt" && python helpers/fix_labels_ac.py datasets/artificalCluster/accuracy/bezier/bez.txt -l 0.1
