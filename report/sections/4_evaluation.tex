@@ -25,13 +25,30 @@ Figure \ref{fig:dataset_size_vs_runtime} shows the scalability of the three algo
 \subsubsection{Clustering Accuracy}
 Different data sets were generated to test the clustering accuracy of the algorithms.
 
-The first data set were a 2-dimensional data set containing a single cluster formed as a plus, see Figure \ref{fig:accuracy_plus}. Same results were reproduced as found in \cite{mafia}. 
+The first data set were a 2-dimensional data set containing a single cluster formed as a plus, see Figure \ref{fig:accuracy_plus}. Same results were reproduced as found in \cite{mafia}, however, it must be noted that for MAFIA to be able to detect the 2-dimensional cluster, it will report some lower-dimensional clusters as well. In contrast, CLIQUE was only able to partly detect the cluster.
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.45]{figures/accuracy_plus.png}
+    \caption{Plus-shaped cluster.}
+    \label{fig:accuracy_plus}
+\end{figure}
+
+The second data set were a 2-dimensional data set containing a single cluster formed as a Bezier curve, see Figure \ref{fig:accuracy_bezier}. The results were similar to the plus-shaped cluster, however, CLIQUE was able to detect the cluster, but not as accurate as MAFIA.
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.6]{figures/accuracy_plus.png}
-    \caption{Plus-shaped cluster.}
-    \label{fig:accuracy_plus}
+    \includegraphics[scale=0.45]{figures/accuracy_bezier.png}
+    \caption{Bezier-shaped cluster.}
+    \label{fig:accuracy_bezier}
+\end{figure}
+
+The third data set were a 10-dimensional data set. 10\% of the data was added as noise records.
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.45]{figures/accuracy_2clusters.png}
+    \caption{Clusters in different subspaces.}
+    \label{fig:accuracy_2clusters}
 \end{figure}
 
 \subsubsection{Scalability with Data Dimensionality and Cluster Dimensionality}
@@ -54,7 +71,12 @@ Figure \ref{fig:cluster_dimensionality_vs_runtime} shows the scalability of the 
 
 The results reported for SUBCLU \cite{subclu} were also tried to be replicated, however, similar results were not achieved.
 
-
-
+\subsection{Sensitive analysis for MAFIA}
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.6]{figures/sensitivity_alpha.png}
+    \caption{Sensitive analysis for MAFIA.}
+    \label{fig:sensitivity_alpha}
+\end{figure}
 
 \subsubsection{Real Data Sets}
