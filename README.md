@@ -85,15 +85,16 @@ Download release 0.8.0 from [here](https://elki-project.github.io/releases/) (ve
 
 ### Basic Usage
 
-1. Link the dataset file to `dbc.in`.
-2. Set the `time` flag to true to measure algorithm execution time.
-3. Choose the desired clustering `algorithm` (e.g., `clustering.dbscan.DBSCAN`).
+1. Link the dataset file to `-dbc.in`.
+2. Set the `-time` flag to true to measure algorithm execution time.
+3. Choose the desired clustering `-algorithm` (e.g., `clustering.dbscan.DBSCAN`).
 4. Set the parameters for the algorithm.
-5. Optionally, use the `ResultWriter` to save output details to a file or `AutomaticVisualization` for plotting the data.
+5. Optionally, use the `-resulthandler ResultWriter` to save output details to a file or `-resulthandler AutomaticVisualization` for plotting the data.
+6. If you need to normalize the data set before clustering (e.g., for DBSCAN), use `-dbc.filter normalization.columnwise.AttributeWiseMinMaxNormalization`.
 
 ### Plotting Labeled Data
 
-ELKI does not provide the MAFIA algorithm, but you can use the `algorithm.NullAlgorithm` to visualize pre-clustered data from other programs.
+ELKI does not provide the MAFIA algorithm, but you can use the `-algorithm algorithm.NullAlgorithm` to visualize pre-clustered data from other programs.
 
 ---
 
