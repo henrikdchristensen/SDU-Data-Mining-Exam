@@ -17,33 +17,38 @@ def read_cluster_files(directory):
 
 def plot_clusters(mafia_clusters, clique_clusters):
     """Plot MAFIA and CLIQUE clusters with distinct colors and borders."""
-    plt.figure(figsize=(4, 4))
+    plt.figure(figsize=(6, 6))
     cmap = plt.get_cmap('tab20')  # Use tab20 colormap for distinct colors
+
+    # Increase font size for ticks
+    plt.rc('xtick', labelsize=14)
+    plt.rc('ytick', labelsize=14)
 
     # Plot CLIQUE clusters with borders
     for i, (filename, cluster) in enumerate(clique_clusters):
         x = cluster.iloc[:, 0]
         y = cluster.iloc[:, 1]
         if i == 1:
-            # Set marker size to 10
-
-            plt.scatter(x, y, color='red', label=f'CLIQUE cluster {i+1} ({filename})', alpha=0.2, marker='s', s=30)
+            plt.scatter(x, y, color='red', label=f'CLIQUE cluster {i+1}', alpha=0.2, marker='s', s=30)
         else:
-            # triangle marker
-            
-            plt.scatter(x, y, color='blue', label=f'CLIQUE cluster {i+1} ({filename})', alpha=0.4, marker='s', s=30)
+            plt.scatter(x, y, color='blue', label=f'CLIQUE cluster {i+1}', alpha=0.4, marker='s', s=30)
     
     # Plot MAFIA clusters with borders
     for i, (filename, cluster) in enumerate(mafia_clusters):
         x = cluster.iloc[:, 0]
         y = cluster.iloc[:, 1]
-        plt.scatter(x, y, color='black', label=f'MAFIA cluster {i+1} ({filename})', alpha=1, marker='x', s=15)
+        plt.scatter(x, y, color='black', label=f'MAFIA cluster {i+1}', alpha=1, marker='x', s=15)
 
-    plt.xlabel('Dimension 0')
-    plt.ylabel('Dimension 1')
-    plt.legend()
+    plt.xlabel('Dimension 0', fontsize=20)
+    plt.ylabel('Dimension 1', fontsize=20)
+    
+    # Increase legend font size
+    plt.legend(fontsize=17)
+    
     plt.xlim(0, 1)
     plt.ylim(0, 1)
+    plt.tight_layout()
+    plt.savefig('plot.png')
     plt.show()
 
 if __name__ == "__main__":
