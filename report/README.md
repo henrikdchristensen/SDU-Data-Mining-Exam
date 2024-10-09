@@ -1,4 +1,4 @@
-The report of the project uses the "Springer's Lecture Notes in Computer Science (LNCS)" template.
+The report of the project uses the _Springer's Lecture Notes in Computer Science (LNCS)_ template.
 
 It consists of the following files:
 - llncs.cls: LaTeX2e document class
