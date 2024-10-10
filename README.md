@@ -162,7 +162,7 @@ Common commands:
 
 ### Setup Python Environment
 ```bash
-conda env create -n mining python=3.12
+conda create -n mining python=3.12
 conda activate mining
 pip install -r requirements.txt
 ```
