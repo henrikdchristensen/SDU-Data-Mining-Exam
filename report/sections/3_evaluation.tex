@@ -19,9 +19,7 @@ All the data sets were normalized such that each attribute was in the range [0, 
 \subsection{Experimental Results}
 
 \subsubsection{Scalability with Data Set Size}
-To evaluate the scalability of the algorithms a data set containing 20 dimensions with 5 clusters in 5 different subspaces with 10\% noise records was used. The data set size ranges from 10k to 1mio records. The results can be seen in Figure \ref{fig:dataset_size_vs_runtime}. As can be seen, MAFIA is the most scalable algorithm of the three. CLIQUE could handle up to 500k records, while SUBCLU was only able to handle up to 100k records. Similar results in terms of growth rate were reported in all three papers \cite{mafia,clique,subclu}. That is, linear growth for MAFIA and CLIQUE, and quadratic growth for SUBCLU. The linear behaviour of CLIQUE and MAFIA comes from the fact that the number of passes over the data set depends only on the dimensionality of the embedded cluster. An increase in the size of the data set just means that more data has to be scanned on every pass over the data set while finding dense units resulting in a linear growth rate. SUBCLU, on the other hand, has a quadratic growth rate, as it relies on the DBSCAN algorithm which needs partial range queries that can be costly in terms of running time.
-
-Better running time of all three is achieved compared to the three papers. This is probably, due to better hardware.
+To evaluate the scalability of the algorithms a data set containing 20 dimensions with 5 clusters in 5 different subspaces with 10\% noise records was used. The data set size ranges from 10k to 1mio records. The results can be seen in Figure \ref{fig:dataset_size_vs_runtime}. As can be seen, MAFIA is the most scalable algorithm of the three. CLIQUE could handle up to 500k records, while SUBCLU was only able to handle up to 100k records. Similar results in terms of growth rate were reported in all three papers \cite{mafia,clique,subclu}. That is, linear growth for MAFIA and CLIQUE, and quadratic growth for SUBCLU. The linear behaviour of CLIQUE and MAFIA comes from the fact that the number of passes over the data set depends only on the dimensionality of the embedded cluster. An increase in the size of the data set just means that more data has to be scanned on every pass over the data set while finding dense units resulting in a linear growth rate. SUBCLU, on the other hand, has a quadratic growth rate, as it relies on the DBSCAN algorithm which needs partial range queries that can be costly in terms of running time. Better running time of all three is achieved compared to the three papers. This is probably, due to better hardware.
 
 Note that, the \texttt{minpts} in SUBCLU were scaled linearly with the data set size, as the clusters in the dateset were of a fixed size, which means, by increasing the data set size, the density of the clusters increases linearly. However, for the other two algorithms, there was no need to scale any of input parameters, as they relies on the density of the units for the total amount of records.
 \begin{figure}[H]
@@ -36,15 +34,16 @@ Note that, the \texttt{minpts} in SUBCLU were scaled linearly with the data set 
 \subsubsection{Clustering Accuracy}
 Many different synthetic data sets were generated to test the clustering accuracy of the algorithms.
 
-The first data set were a 2-dimensional data set containing a single cluster formed as a plus with 10\% noise added, as discussed in \cite{mafia}. MAFIA, was able to detect the 2-dimensional cluster almost completely, whereas CLIQUE only partly detects the cluster and the clusters overlaps. The accuracy of MAFIA comes however with a cost, as it also reports some lower-dimensional clusters as well. The results can be seen in Figure \ref{fig:accuracy_plus}. The effect of adaptive grid sizes, clearly shows that MAFIA is more flexible than CLIQUE in such cases.
-\begin{figure}[H]
-    \vspace*{-0.5cm}
-    \centering
-    \includegraphics[scale=0.27]{figures/accuracy_plus.png}
-    \caption{A single plus-shaped cluster.}
-    \label{fig:accuracy_plus}
-    \vspace*{-0.5cm}
-\end{figure}
+The first data set were a 2-dimensional data set containing a single cluster formed as a skewed plus-sign with 10\% noise added. Similarly results as in \cite{mafia} was achieved, MAFIA detects the 2-dimensional cluster accurately, whereas CLIQUE finds two overlapping clusters, where none of these detects the borders correctly. The accuracy of MAFIA comes, however, with a cost, as it also reports some lower-dimensional clusters as well.
+% The results can be seen in Figure \ref{fig:accuracy_plus}, where only the best cluster found by MAFIA is illustrated. The effect of adaptive grid sizes, clearly shows that MAFIA is more flexible than CLIQUE in such cases.
+% \begin{figure}[H]
+%     \vspace*{-0.5cm}
+%     \centering
+%     \includegraphics[scale=0.35]{figures/accuracy_plus.png}
+%     \caption{A single plus-shaped cluster.}
+%     \label{fig:accuracy_plus}
+%     \vspace*{-0.5cm}
+% \end{figure}
 
 The second data set contains 10 dimensions with contains 2 clusters embedded in a different 4 dimensional subspace. 10\% of the data was added as noise records. Similar data set as the one used in \cite{mafia}. The results can be seen in Figure \ref{fig:accuracy_2clusters}. Here, MAFIA was able to detect the clusters without any additional lower-dimensional clusters. In contrast, CLIQUE reports some overlapping clusters and some of the noise records as clusters. SUBCLU detects also the two clusters, but reports many lower-dimensional clusters and noise records as clusters as well.
 \begin{figure}[H]
@@ -95,15 +94,15 @@ Figure \ref{fig:cluster_dimensionality_vs_runtime} shows the scalability of the 
 
 The results reported for SUBCLU in \cite{subclu} were also tried to be replicated, however, similar it was not possible evaluate in different scales of data set dimensionality and cluster dimensionality, as the PC constantly freezes -- probably due to the high memory consumption. In future work, it would be interesting to investigate this further.
 
-\subsection{Sensitive analysis for MAFIA}
-From \cite{mafia}, MAFIA should not be sensitive to the choice of $\alpha$. Therefore, a 20-dimensional data set with 1mio data points with 10\% noise were set to evaluate this. $\beta$ was fixed to 35\%, and $\alpha$ was ranging from 0.8 to 5.2 in step size of 0.4. The results can be seen in Figure \ref{fig:sensitivity_alpha}. From the results one could again draw the conclusion that MAFIA is not very sensitive to the $\alpha$ parameter. However, during evaluation of different types of data sets, many different values $\alpha$ was used to detect the right clusters. Also, different $\beta$ values as well as maximum number of windows was needed to be set properly to achieve meaningful results.
-\begin{figure}[H]
-    \vspace*{-0.5cm}
-    \centering
-    \includegraphics[scale=0.45]{figures/sensitivity_alpha.png}
-    \caption{Sensitivity of $\alpha$ for MAFIA.}
-    \label{fig:sensitivity_alpha}
-\end{figure}
+% \subsection{Sensitive analysis for MAFIA}
+% From \cite{mafia}, MAFIA should not be sensitive to the choice of $\alpha$. Therefore, a 20-dimensional data set with 1mio data points with 10\% noise were set to evaluate this. $\beta$ was fixed to 35\%, and $\alpha$ was ranging from 0.8 to 5.2 in step size of 0.4. The results can be seen in Figure \ref{fig:sensitivity_alpha}. From the results one could again draw the conclusion that MAFIA is not very sensitive to the $\alpha$ parameter. However, during evaluation of different types of data sets, many different values $\alpha$ was used to detect the right clusters. Also, different $\beta$ values as well as maximum number of windows was needed to be set properly to achieve meaningful results.
+% \begin{figure}[H]
+%     \vspace*{-0.5cm}
+%     \centering
+%     \includegraphics[scale=0.45]{figures/sensitivity_alpha.png}
+%     \caption{Sensitivity of $\alpha$ for MAFIA.}
+%     \label{fig:sensitivity_alpha}
+% \end{figure}
 
 \subsubsection{Real Data Sets}
 Two real-world data sets are used to evaluate the algorithms in a more realistic setting. Small data sets were selected for both performance and visualization reasons. Both data sets were normalized such that each attribute was in the range [0, 1].
@@ -112,21 +111,21 @@ The first data set is the well-known \textit{Iris} data set \cite{iris}, which c
 \begin{figure}[H]
     \vspace*{-0.5cm}
     \centering
-    \subfloat[][Original]{\includegraphics[width=0.25\textwidth]{figures/real_world_iris/orig.png}\label{fig:real_world_iris_orig}}~~~~
-    \subfloat[][CLIQUE]{\includegraphics[width=0.25\textwidth]{figures/real_world_iris/CLIQUE.png}\label{fig:real_world_iris_clique}}\\
-    \subfloat[][MAFIA]{\includegraphics[width=0.25\textwidth]{figures/real_world_iris/MAFIA.png}\label{fig:real_world_iris_mafia}}~~~~
-    \subfloat[][SUBCLU]{\includegraphics[width=0.25\textwidth]{figures/real_world_iris/SUBCLU.png}\label{fig:real_world_iris_subclu}}
+    \subfloat[][Original]{\includegraphics[width=0.3\textwidth]{figures/real_world_iris/orig.png}\label{fig:real_world_iris_orig}}~~~~
+    \subfloat[][CLIQUE]{\includegraphics[width=0.3\textwidth]{figures/real_world_iris/CLIQUE.png}\label{fig:real_world_iris_clique}}\\
+    \subfloat[][MAFIA]{\includegraphics[width=0.3\textwidth]{figures/real_world_iris/MAFIA.png}\label{fig:real_world_iris_mafia}}~~~~
+    \subfloat[][SUBCLU]{\includegraphics[width=0.3\textwidth]{figures/real_world_iris/SUBCLU.png}\label{fig:real_world_iris_subclu}}
     \caption{Iris data set.}
     \label{fig:real_world_iris}
     \vspace*{-0.5cm}
 \end{figure}
 
-The second data set is the \textit{Date Fruit} data set \cite{date-fruit}, which contains 898 records of 7 different date fruit types (e.g. Barhee, Deglet Nour, Sukkary, Rotab). These were obtained via a computer vision, where 34 features (e.g shape and color) was extracted. Only SUBCLU were able to produce meaningful results, see Figure \ref{fig:real_world_date_fruit}. CLIQUE and MAFIA either produced way too many clusters or close to one single cluster.
-\begin{figure}[H]
-    \vspace*{-0.5cm}
-    \centering
-    \subfloat[][Original]{\includegraphics[width=0.25\textwidth]{figures/real_world_date_fruit/orig.png}\label{fig:real_world_date_fruit_orig}}~~~~
-    \subfloat[][SUBCLU]{\includegraphics[width=0.25\textwidth]{figures/real_world_date_fruit/SUBCLU.png}\label{fig:real_world_date_fruit_subclu}}
-    \caption{Date Fruit data set.}
-    \label{fig:real_world_date_fruit}
-\end{figure}
+The second data set is the \textit{Date Fruit} data set \cite{date-fruit}, which contains 898 records of 7 different date fruit types (e.g. Barhee, Deglet Nour, Sukkary, Rotab). These were obtained via a computer vision, where 34 features (e.g shape and color) was extracted. Only SUBCLU were able to produce clusters somewhat close to the true clusters but also finds many lower-dimensional clusters and small clusters. CLIQUE and MAFIA either produced way too many clusters or close to one single cluster.
+% \begin{figure}[H]
+%     \vspace*{-0.5cm}
+%     \centering
+%     \subfloat[][Original]{\includegraphics[width=0.3\textwidth]{figures/real_world_date_fruit/orig.png}\label{fig:real_world_date_fruit_orig}}~~~~
+%     \subfloat[][SUBCLU]{\includegraphics[width=0.3\textwidth]{figures/real_world_date_fruit/SUBCLU.png}\label{fig:real_world_date_fruit_subclu}}
+%     \caption{Date Fruit data set.}
+%     \label{fig:real_world_date_fruit}
+% \end{figure}

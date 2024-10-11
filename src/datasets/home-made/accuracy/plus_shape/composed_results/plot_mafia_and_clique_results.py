@@ -17,7 +17,7 @@ def read_cluster_files(directory):
 
 def plot_clusters(mafia_clusters, clique_clusters):
     """Plot MAFIA and CLIQUE clusters with distinct colors and borders."""
-    plt.figure(figsize=(6, 6))
+    plt.figure(figsize=(4.5, 4.5))
     cmap = plt.get_cmap('tab20')  # Use tab20 colormap for distinct colors
 
     # Increase font size for ticks
@@ -37,18 +37,22 @@ def plot_clusters(mafia_clusters, clique_clusters):
     for i, (filename, cluster) in enumerate(mafia_clusters):
         x = cluster.iloc[:, 0]
         y = cluster.iloc[:, 1]
-        plt.scatter(x, y, color='black', label=f'MAFIA cluster {i+1}', alpha=1, marker='x', s=15)
+        plt.scatter(x, y, color='black', label=f'MAFIA cluster 5', alpha=1, marker='x', s=15)
 
-    plt.xlabel('Dimension 0', fontsize=20)
-    plt.ylabel('Dimension 1', fontsize=20)
+    plt.xlabel(r'$A_1$', fontsize=18)
+    plt.ylabel(r'$A_2$', fontsize=18)
     
     # Increase legend font size
-    plt.legend(fontsize=17)
+    plt.legend(fontsize=14)
     
+    # Set ticks sizes
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
+
     plt.xlim(0, 1)
     plt.ylim(0, 1)
     plt.tight_layout()
-    plt.savefig('plot.png')
+    plt.savefig('accuracy_plus.png')
     plt.show()
 
 if __name__ == "__main__":
