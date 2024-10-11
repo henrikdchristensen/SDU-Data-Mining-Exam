@@ -9,68 +9,40 @@ We will adopt the following notation: Let $\mathcal{A} = \{A_1, \dots, A_d\}$ be
 The key idea of grid-based subspace clustering is to partition the $\mathcal{S}$ into axis-parallel grid structure starting in 1-dimensional space. The grids forms hyper-rectangular \textit{units} (cells) for which we find the number of points in each. Only the units that exceeds a certain threshold are retained, called \textit{dense units}. Next, adjacent dense units will be merged to form so called \textit{candidate dense units} (CDUs), which will be used to find clusters in higher dimensional subspaces. The goal is then to describe the clusters using a minimal description in the form of DNF (\textit{Disjunctive Normal Form}) expressions.
 
 \subsubsection{CLIQUE}
-CLIQUE is a bottom-up grid-based subspace clustering algorithm that uses the monotonicity property as the clustering criterion, which is similar to the well-known Apriori algorithm.
+CLIQUE is a bottom-up, grid-based subspace clustering algorithm that uses the monotonicity property as its clustering criterion, as described in Lemma \ref{lem:mono}:
+
 \begin{lemma}\label{lem:mono}
-    If a collection of points $S$ is a cluster in a $k$-dimensional subspace, then $S$ is also a part of a cluster in any $(k-1)$-dimensional projections of this space.
+    If a collection of points $S$ is a cluster in a $k$-dimensional subspace, then $S$ is also part of a cluster in any $(k-1)$-dimensional projection of this space.
 \end{lemma}
-Proof can be found in \cite{clique}.
 
-First, $\mathcal{S}$ is partitioned into equal-sized $\varepsilon$ (input parameter) intervals, creating axis-parallel rectangular units. Hereafter, the dense units are found in the 1-dimensional space. The dense units are then merged to form CDUs in the 2-dimensional space, thus reducing the search space using Lemma \ref{lem:mono}. That is, CDUs in any $k$ dimensions are obtained by merging the dense cells in $(k-1)$ dimensions which share the \textit{first} $(k-2)$ dimensions. The procedure to merge dense cells continues unitil no more CDUs are generated. However, if a dense unit exists in $k$ dimensions then all of its projections in a subset of the $k$ dimensions that is $O(2^k)$ different combinations, are also dense. Therefore the running time of the algorithm is exponential in the highest dimensionality of any dense unit. However, using a pruning technique suggested in \cite{clique}, where the authors suggest to prune subspaces with low coverage, that is the number of points that the dense units cover in a subspace. However, this comes with a cost as it may prune subspaces that may contain clusters.
+The proof is provided in \cite{clique}.
 
-A cluster is a maximal set of connected dense units in $k$-dimensions. Two $k$-dimensional units $u_1, u_2$ are \textit{connected} if they have a common face in the $k$-dimensional space, that is the two units share $k-1$ dimensions. or if they are connected by a common cell. That is, there exists another $k$-dimensional unit, say $u_3$, such that $u_1$ is connected to $u_3$ and $u_2$ is connected to $u_3$.
+The algorithm begins by partitioning the dataset $\mathcal{S}$ into equal-sized intervals of width $\varepsilon$ (input parameter), creating axis-parallel rectangular units. It then scans the dataset to identify 1-dimensional (1D) dense units by counting the number of points in each interval using a histogram, as shown in Figure \ref{fig:dense_cells_and_regions}. For example, with a grid size of $\varepsilon = 0.2$, three intervals in dimension $A_1$ exceed the density threshold $\tau$ (input parameter), while dimension $A_2$ reports four dense units. These dense units are known as \textit{candidate dense units} (CDUs).
 
-A region in $k$ dimensions is an axis-parallel rectangular $k$-dimensional set. We are only interested in those regions that can be expressed as unions; henceforth all referencs to a region mean such unions. A region can be expressed as a DNF expression on intervals of the domains $A_i$.
+The algorithm proceeds incrementally: it starts from 1D and moves to 2D, 3D, and so on, until no more CDUs can be generated. At each stage, the algorithm makes another pass over the dataset to determine which CDUs are dense in the higher dimensions, using the $(k-1)$-dimensional dense units identified in the previous stage. Specifically, CDUs in $k$ dimensions are formed by merging dense units in $(k-1)$ dimensions that share the first $(k-2)$ dimensions. This process continues until no further CDUs are generated.
 
-We aim to make a minimal description of a cluster which will be a non-overlapping covering of the cluster. An example is given in Figure \ref{fig:dense_cells_and_regions}, where the grid size given by $\varepsilon$ is 0.05, where the minimal description of the cluster is $A \cup B$ and has the DNF expression: $((0.05 \le A_1 < 0.15) ~\wedge~ (0.10 \le A_2 < 0.20)) ~\vee~ ((0.10 \le A_1 < 0.20) ~\wedge~ (0.05 \le A_2 < 0.15))$.
+To optimize performance, CLIQUE applies a pruning technique called \textit{coverage} (from \cite{clique}) to reduce computation time. This technique prunes subspaces with low coverage (i.e., those containing fewer points). However, this may risk eliminating subspaces that could potentially contain clusters.
+
+Once all dense units are identified, CLIQUE defines clusters as maximal sets of connected dense units. For each $k$-dimensional subspace, the algorithm computes disjoint sets of connected dense units, where two units are connected if they share $k-1$ dimensions (a common face in the $k$-dimensional space) or if they are indirectly connected through other units. The algorithm then generates minimal cluster descriptions by covering each set of connected dense units with maximal regions and determining the minimal cover. For instance, in Figure \ref{fig:dense_cells_and_regions}, the minimal cover of the clusters is $A \cup B$, expressed as: $((0.2 \leq A_1 < 0.6) \land (0.4 \leq A_2 < 0.8)) \lor ((0.4 \leq A_1 < 0.8) \land (0.2 \leq A_2 < 0.6))$.
 \begin{figure}[H]
     \vspace*{-0.5cm}
     \centering
-    \includegraphics[width=0.3\textwidth]{figures/dense_cells_and_regions.png}
+    \includegraphics[width=0.35\textwidth]{figures/dense_cells_and_regions.png}
     \caption{Illustration of a dense unit $u$ and two overlapping dense regions $A$ and $B$.}
     \label{fig:dense_cells_and_regions}
     \vspace*{-0.5cm}
 \end{figure}
 
-
-Initialization:
-
-    The algorithm begins by making a pass over the dataset to identify dense units in 1 dimension (1D). These are the grid intervals in each individual dimension where the number of points meets or exceeds the density threshold (ττ).
-    Once the 1D dense units are identified, the algorithm moves on to higher dimensions, incrementing the dimension level by one at each step.
-
-Level-by-Level Approach:
-
-    The algorithm proceeds in stages, going from 1D to 2D, then 2D to 3D, and so on, until no more candidates for dense units can be generated at a given level. Each stage is focused on determining kk-dimensional dense units using the (k−1)(k−1)-dimensional dense units identified in the previous stage.
-
-Candidate Generation Procedure:
-
-    The core of the algorithm lies in its candidate generation procedure, which uses a self-join operation on the set of (k−1)(k−1)-dimensional dense units (denoted as Dk−1Dk−1​).
-    Join Condition: The join operation is performed to form potential kk-dimensional units (denoted as CkCk​). For this join, units must share the same intervals in the first k−2k−2 dimensions, and the intervals in the (k−1)(k−1)-th dimension must differ.
-        For example, if we have two (k−1)(k−1)-dimensional units u1u1​ and u2u2​ with intervals:
-            u1.a1=u2.a1,u1.a2=u2.a2,…,u1.ak−2=u2.ak−2u1​.a1​=u2​.a1​,u1​.a2​=u2​.a2​,…,u1​.ak−2​=u2​.ak−2​
-            u1.ak−1<u2.ak−1u1​.ak−1​<u2​.ak−1​
-        These conditions ensure that the units share the same intervals in the first k−2k−2 dimensions but differ in the last dimension, forming a candidate for a kk-dimensional unit.
-
-Forming CkCk​:
-
-    The candidate kk-dimensional units are formed by combining the intervals from u1u1​ and u2u2​, specifically adding the intervals from the k−1k−1-th dimension where they differ.
-    The result is a superset CkCk​ of potential kk-dimensional dense units.
-
-Filtering Candidate Dense Units:
-
-    The algorithm then performs a filtering step to identify which of these candidate units in CkCk​ are actually dense. This is done by making a pass over the data again to count the number of points in each candidate unit.
-    Any candidate unit that meets or exceeds the density threshold (ττ) is retained as a dense kk-dimensional unit.
-
-Projection Checking:
-
-    The algorithm further checks each dense unit from CkCk​ to ensure that all its projections onto (k−1)(k−1) dimensions are also dense (as per Lemma 1). If a kk-dimensional unit has any (k−1)(k−1)-dimensional projection that is not in Dk−1Dk−1​, it is discarded.
-    This ensures that a unit is only marked as dense if all its lower-dimensional projections are also dense.
-
-Termination:
-
-    The algorithm continues this process, incrementing the dimensionality level, until no more candidates can be generated. At this point, the algorithm terminates.
-
 \subsection{MAFIA}
 MAFIA is an extension to CLIQUE where the grid sizes are adaptive meaning that the grid sizes are not fixed but are automatically determined by an algorithm. The idea is to cosim-2012ncentrate the portions of the data space, as having more points a more likely to be part of a cluster region enabling minimal length DNF expressions. The overall intention is not to rely on the input parameters CLIQUE uses do not use on the pruning technique as noted in cite{clique}, this could result in lost information. The algorithm is described in more detail in Section \ref{sec:mafia}.
+\begin{figure}[H]
+    \vspace*{-0.5cm}
+    \centering
+    \includegraphics[width=0.35\textwidth]{figures/dense_cells_and_regions.png}
+    \caption{Illustration of a dense unit $u$ and two overlapping dense regions $A$ and $B$.}
+    \label{fig:dense_cells_and_regions}
+    \vspace*{-0.5cm}
+\end{figure}
 
 \subsection{Density-based approach}
 A big drawback of grid-based methods is that the rely on the grids. In Figure \ref{fig:dense_cells_and_regions} we see that the due to the ragid grid structure we might miss cluster points closely to the dense cells due to non-rectangular cluster shape. Furthermore, This is a limitation of grid-based methods. Density-based methods do not have this limitation, as they do not rely on grids. Instead, they rely on the density of the data points. A well-known density-based clustering algorithm is DBSCAN \cite{dbscan}.

@@ -1,2 +1,62 @@
 - public repo
 - accuracy on 20k dataset
+
+
+
+
+Let's use a simple example with three dimensions (\( A_1, A_2, A_3 \)) to clearly illustrate how CLIQUE and MAFIA differ in forming higher-dimensional clusters. This example will show how MAFIA's flexibility allows it to find clusters that CLIQUE might miss.
+
+### Example Setup
+We have a dataset in a 3-dimensional space (\( A_1, A_2, A_3 \)). Each dimension is divided into intervals:
+
+- **\( A_1 \)** intervals: [0.0, 0.2], [0.2, 0.4], [0.4, 0.6]
+  - **Dense interval**: [0.0, 0.2]
+- **\( A_2 \)** intervals: [0.2, 0.4], [0.4, 0.6], [0.6, 0.8]
+  - **Dense interval**: [0.4, 0.6]
+- **\( A_3 \)** intervals: [0.3, 0.5], [0.5, 0.7], [0.7, 0.9]
+  - **Dense interval**: [0.5, 0.7]
+
+We assume that these dense intervals meet the density threshold, meaning they contain enough points to be considered dense.
+
+### Step 1: Identify 1-Dimensional Dense Units
+We have:
+- \( A_1 = [0.0, 0.2] \) as a dense interval in \( A_1 \).
+- \( A_2 = [0.4, 0.6] \) as a dense interval in \( A_2 \).
+- \( A_3 = [0.5, 0.7] \) as a dense interval in \( A_3 \).
+
+### Step 2: Form 2-Dimensional Candidate Units
+
+#### CLIQUE’s Approach:
+- CLIQUE combines dense units based on the **first dimension** as the reference. It uses a lexicographical order (e.g., \( A_1 \) first, then \( A_2 \), then \( A_3 \)).
+
+1. **Combining \( A_1 \) with \( A_2 \)**:
+   - CLIQUE looks for combinations of the dense interval in \( A_1 \) ([0.0, 0.2]) with dense intervals in \( A_2 \).
+   - There is no adjacent or overlapping interval in \( A_2 \) for \( A_1 = [0.0, 0.2] \). Thus, CLIQUE **does not form a valid 2-dimensional unit** here.
+
+2. **Combining \( A_1 \) with \( A_3 \)**:
+   - CLIQUE then tries to combine \( A_1 = [0.0, 0.2] \) with dense intervals in \( A_3 \).
+   - Again, there is no adjacent interval in \( A_3 \) for \( A_1 = [0.0, 0.2] \). CLIQUE **fails to form a 2-dimensional dense unit**.
+
+3. **Combining \( A_2 \) with \( A_3 \)**:
+   - CLIQUE would only explore this combination if it has already combined \( A_1 \) and \( A_2 \) or \( A_1 \) and \( A_3 \). Since neither of those combinations were valid, CLIQUE does not check \( (A_2, A_3) \).
+
+**Result**: CLIQUE finds **no valid 2-dimensional dense unit** in this example because it strictly follows the order of combining dimensions, starting with \( A_1 \).
+
+#### MAFIA’s Approach:
+- MAFIA allows any dimension to be the reference, so it looks for dense units across all possible combinations, not just those starting with \( A_1 \).
+
+1. **Combining \( A_2 \) with \( A_3 \)**:
+   - MAFIA checks if the dense interval in \( A_2 = [0.4, 0.6] \) can be combined with any dense interval in \( A_3 \).
+   - The dense interval \( A_3 = [0.5, 0.7] \) is adjacent to \( A_2 = [0.4, 0.6] \). Therefore, MAFIA combines these intervals to form the 2-dimensional unit \( (A_2 = [0.4, 0.6], A_3 = [0.5, 0.7]) \).
+   - This 2-dimensional unit is dense because both intervals are dense.
+
+**Result**: MAFIA successfully finds a 2-dimensional dense unit \( (A_2, A_3) \) that CLIQUE would have missed.
+
+### Step 3: Form 3-Dimensional Candidate Units
+
+- **CLIQUE** does not proceed further because it did not find any valid 2-dimensional unit.
+- **MAFIA**, having found \( (A_2, A_3) \) as a dense unit, could explore higher-dimensional combinations if other dimensions were available.
+
+### Summary
+- **CLIQUE**: Due to its strict lexicographical order (starting with \( A_1 \)), CLIQUE fails to find any dense 2-dimensional unit in this example because there is no valid interval in \( A_2 \) or \( A_3 \) that can combine with \( A_1 \).
+- **MAFIA**: MAFIA’s
