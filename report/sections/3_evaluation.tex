@@ -5,23 +5,27 @@ The evaluation of MAFIA was performed using \textit{GPUMAFIA} \cite{gpumafia}, w
 
 CLIQUE and SUBCLU were evaluated on the main machine using \textit{ELKI} \cite{elki}. Thus, one should be careful to compare the results of the three algorithms directly, as the execution environment and the implementation may affect the results. However, the growth rate and their clustering of the data sets can be compared.
 
-Throughout the different experiments, a range of input parameters for the three algorithms were tested. The best found were selected. The complete evaluation project can be found in the GitHub repository: \url{https://github.com/henrikdchristensen/SDU-Data-Mining-Exam}. Here, additional experiments as well as detailed descriptions of how to generate the data sets and how to install and use GPUMAFIA is described.
+Throughout the different experiments, a range of input parameters for the three algorithms were tested. The best found were selected to show their best performance on the corresponding data set. The complete evaluation project can be found in the GitHub repository: \url{https://github.com/henrikdchristensen/SDU-Data-Mining-Exam}. Here, additional experiments as well as detailed descriptions of how to generate the data sets and how to install and use GPUMAFIA is described.
 
 \subsection{Data set generation}
-The aim for the synthetic data generation was to be able to produce similar data sets as discussed in both \cite{clique,mafia}. That is, hyper-rectangles (axis-parallel) non-overlapping clusters in different subspaces. This was achieved by using \textit{MDCGen} \cite{mdcgen}, where different sizes and different densities of the clusters could be determined, as well as which attributes for each cluster that are noise for which values at random is selected from a uniform distribution over the entire range of the attribute.
+The aim for the synthetic data generation was to be able to produce similar data sets as discussed in both \cite{clique,mafia}. That is, axis-parallel, hyper-rectangles, non-overlapping clusters in different subspaces. This was achieved using \textit{MDCGen} \cite{mdcgen}, where different sizes and different densities of the clusters could be set, as well as which attributes for each cluster that acts as noise for which values at random is selected from a uniform distribution over the entire range of the attribute.
 
 However, to see the one of the main advantages of SUBCLU compared to CLIQUE and MAFIA, a data set containing a Bezier-shaped cluster was created using \textit{Artificial Cluster} \cite{ac}. In addition, a self-populated data set containing a plus-shaped cluster was created as discussed in \cite{mafia}.
 
 Finally, two real-world data sets were selected to evaluate the algorithms in a more realistic setting.
 
-All the data sets were normalized such that each attribute are in the range [0, 1].
+All data sets were normalized so that each attribute are in the range [0, 1].
 
 \subsection{Experimental Results}
 
 \subsubsection{Scalability with Data Set Size}
-To evaluate the scalability of the algorithms a 20-dimensional data set containing 5 clusters in 5 different subspaces with 10\% noise records was used. The data set size ranges from 10k to 1mio records. The results can be seen in Figure \ref{fig:dataset_size_vs_runtime}. As can be seen, MAFIA is the most scalable algorithm of the three. CLIQUE could handle up to 500k records, while SUBCLU was only able to handle up to 100k records. Similar results in terms of growth rate were reported in all three papers \cite{mafia,clique,subclu}. That is, linear growth for MAFIA and CLIQUE, and quadratic growth for SUBCLU. The linear behaviour of CLIQUE and MAFIA comes from the fact that the number of passes over the data set depends only on the cluster dimensionality. An increase in the size of the data set just means that more data has to be scanned on every pass over the data set while finding DUs resulting in a linear growth rate. SUBCLU, on the other hand, has a quadratic growth rate, as it relies on the DBSCAN algorithm which needs partial range queries that are costly in terms of running time. Better running time of all three is achieved compared to the three papers, which is probably due to better hardware.
+To evaluate the scalability of the algorithms a 20-dimensional data set containing 5 clusters in 5 different subspaces with 10\% noise records was used. The data set size ranges from 10k to 1mio records. The results can be seen in Figure \ref{fig:dataset_size_vs_runtime}. As can be seen, MAFIA is the most scalable algorithm of the three. CLIQUE could handle up to 500k records, while SUBCLU was only able to handle up to 100k records.
 
-Note that, the \texttt{minpts} in SUBCLU were scaled linearly with the data set size, as the clusters in the dateset were of fixed sizes, which means, by increasing the data set size, the density of the clusters increases linearly. However, for the other two algorithms, there was no need to scale any of input parameters, as they relies on the density of the units for the total amount of records.
+CLIQUE and MAFIA achieves a linear growth rate, and SUBCLU have a quadratic growth. The linear behavior of CLIQUE and MAFIA comes from the fact that the number of passes over the data set depends only on the cluster dimensionality. An increase in the size of the data set just means that more data has to be scanned on every pass over the data set while finding DUs resulting in a linear growth rate. SUBCLU, on the other hand, relies on DBSCAN which needs partial range queries, which are costly in terms of running time.
+
+Similar growth rates is achieved for all algorithms as their original papers \cite{mafia,clique,subclu}, however, the achieved running time in this experiment is better, which is probably due to better hardware or slightly different data sets.
+
+Note that, the $minPts$ in SUBCLU were scaled linearly with the data set size, as the clusters in the dateset were of fixed sizes, which means, by increasing the data set size, the density of the clusters increases linearly. However, for the other two algorithms, there was no need to scale any of input parameters, as they relies on the density of the units for the total amount of records.
 \begin{figure}[H]
     \vspace*{-0.5cm}
     \centering
@@ -34,7 +38,7 @@ Note that, the \texttt{minpts} in SUBCLU were scaled linearly with the data set 
 \subsubsection{Clustering Accuracy}
 Many different synthetic data sets were generated to test the clustering accuracy of the algorithms.
 
-The first dataset was a 2-dimensional set containing a single cluster shaped like a skewed plus-sign, with 10\% noise added. Results similar to those reported in \cite{mafia} were achieved. MAFIA successfully identified a single cluster that accurately captured the cluster’s boundaries. In contrast, CLIQUE was unable to report a single cluster that correctly detected the borders. However, MAFIA’s accuracy comes at a cost, as it also identifies many lower-dimensional clusters.
+The first dataset was a 2-dimensional set containing a single cluster, shaped like a skewed plus-sign, with 10\% noise added. Results similar to those reported in \cite{mafia} were achieved. MAFIA successfully identified a single cluster that accurately captured the cluster’s boundaries. In contrast, CLIQUE was unable to report a single cluster that correctly detected the borders. However, MAFIA’s accuracy comes at a cost, as it also identifies many lower-dimensional clusters.
 
 % The results can be seen in Figure \ref{fig:accuracy_plus}, where only the best cluster found by MAFIA is illustrated. The effect of adaptive grid sizes, clearly shows that MAFIA is more flexible than CLIQUE in such cases.
 % \begin{figure}[H]
@@ -61,7 +65,7 @@ The second data was a 10-dimensional set containing 2 clusters embedded in a dif
     \vspace*{-0.5cm}
 \end{figure}
 
-The third data set were a 2-dimensional set containing a single cluster formed as a Bezier curve with 10\% noise added to the data set. As expected, SUBCLU outperforms the other two algorithms as can be seen in Figure \ref{fig:accuracy_bezier}. MAFIA and CLIQUE only partly detects the cluster and reports additional clusters and noise records as clusters. The result of SUBCLU demonstrates its use of DBSCAN.
+The third data set were a 2-dimensional set containing a single cluster formed as a Bezier curve with 10\% noise added to the data set. As expected, SUBCLU outperforms the other two algorithms as can be seen in Figure \ref{fig:accuracy_bezier}. MAFIA and CLIQUE only partly detects the cluster and reports additional clusters and noise records as clusters. The result of SUBCLU demonstrates its use of neighborhood of points.
 \begin{figure}[H]
     \vspace*{-0.5cm}
     \centering
@@ -73,7 +77,7 @@ The third data set were a 2-dimensional set containing a single cluster formed a
 \end{figure}
 
 \subsubsection{Scalability with Data Dimensionality and Cluster Dimensionality}
-Figure \ref{fig:data_dimensionality_vs_runtime} shows the scalability of the CLIQUE and MAFIA with increasing data set dimensionality. The data set contains 1 mio. records with 3 clusters in 5 different subspaces and 10\% noise records, similar to the data set in \cite{mafia}. The data set dimensionality ranges from 10 to 100 dimensions. However, CLIQUE was only able to handle half of the dimensions, as the PC constantly freezes -- probably due to the high memory consumption. In \cite{clique} it is noted that CLIQUE has a quadratic growth rate in terms of data set dimensionality. To investigate this even further, one could try to reduce the memory consumption by having a smaller amount of records in the data set. Nevertheless, MAFIA is the most scalable algorithm of the two.
+Figure \ref{fig:data_dimensionality_vs_runtime} shows the scalability of the CLIQUE and MAFIA with increasing data set dimensionality. The data set contains 1 mio. records with 3 clusters in 5 different subspaces and 10\% noise records. The data set dimensionality ranges from 10 to 100 dimensions. However, CLIQUE was only able to handle half of the dimensions, as the PC constantly freezes -- probably due to the high memory consumption. In \cite{clique} it is noted that CLIQUE has a quadratic growth rate in terms of data set dimensionality. To investigate this even further, one could try to reduce the memory consumption by having a smaller amount of records in the data set. Nevertheless, the experiment clearly shows that MAFIA is the most scalable algorithm of the two.
 \begin{figure}[H]
     \vspace*{-0.5cm}
     \centering
@@ -93,7 +97,7 @@ Figure \ref{fig:cluster_dimensionality_vs_runtime} shows the scalability of the 
     \vspace*{-0.5cm}
 \end{figure}
 
-The results reported for SUBCLU in \cite{subclu} were also tried to be replicated, however, similar results was not possible evaluate in different scales of data set dimensionality and cluster dimensionality, as the PC constantly freezes -- probably due to the high memory consumption. In future work, it would be interesting to investigate this further.
+The results reported for SUBCLU in \cite{subclu} were also tried to be replicated, however, the PC constantly freezes -- probably due to the high memory consumption. In future work, it would be interesting to investigate this further maybe starting with a very small data set.
 
 % \subsection{Sensitive analysis for MAFIA}
 % From \cite{mafia}, MAFIA should not be sensitive to the choice of $\alpha$. Therefore, a 20-dimensional data set with 1mio data points with 10\% noise were set to evaluate this. $\beta$ was fixed to 35\%, and $\alpha$ was ranging from 0.8 to 5.2 in step size of 0.4. The results can be seen in Figure \ref{fig:sensitivity_alpha}. From the results one could again draw the conclusion that MAFIA is not very sensitive to the $\alpha$ parameter. However, during evaluation of different types of data sets, many different values $\alpha$ was used to detect the right clusters. Also, different $\beta$ values as well as maximum number of windows was needed to be set properly to achieve meaningful results.
@@ -108,7 +112,7 @@ The results reported for SUBCLU in \cite{subclu} were also tried to be replicate
 \subsubsection{Real Data Sets}
 Two real-world data sets are used to evaluate the algorithms in a more realistic setting. Small data sets were selected for both performance and visualization reasons. Both data sets were normalized such that each attribute was in the range [0, 1].
 
-The first data set is the well-known \textit{Iris} data set \cite{iris}, which contains 150 records of 3 different iris types (e.g. Setosa, Versicolor, Virginica). The data set contains 4 features (sepal length, sepal width, petal length and petal width). All three algorithms produced some meaningful clusters, however, as can be seen in Figure \ref{fig:real_world_iris}. It is hard to determine which algorithm performs the best in this case.
+The first data set is the well-known \textit{Iris} data set \cite{iris}, which contains 150 records of 3 different iris types (e.g. Setosa, Versicolor, Virginica). The data set contains 4 features (sepal length, sepal width, petal length and petal width). All three algorithms successfully generated clusters using their corresponding approach. However, the overall cluster quality was not optimal.
 % \begin{figure}[H]
 %     \vspace*{-0.5cm}
 %     \centering

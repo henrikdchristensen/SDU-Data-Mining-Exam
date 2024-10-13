@@ -1,29 +1,23 @@
 \section{Discussion}
-CLIQUE, MAFIA, and SUBCLU are three prominent subspace clustering algorithms, each offering unique strengths and limitations. CLIQUE, as one of the earliest subspace clustering approaches. Despite the rigid grid structure it is very simple and intuitive. However, its reliance on fixed grid boundaries can lead to issues when clusters do not align with these grids, resulting in missed or fragmented clusters. Moreover, the algorithm is sensitive to grid size and density thresholds, which may not be optimal for all datasets.
+CLIQUE, MAFIA, and SUBCLU are three prominent subspace clustering algorithms, each offering unique strengths and limitations. Despite the rigid grid structure CLIQUE uses it is very simple and intuitive. However, its reliance on fixed grid boundaries can lead to issues when clusters do not align with these grids, resulting in missed or fragmented clusters. Moreover, the algorithm is sensitive to grid size and density thresholds, which may not be optimal for all datasets.
 
-MAFIA builds upon CLIQUE by introducing adaptive grid sizes, allowing it to dynamically adjust grid boundaries based on data density. This modification enables MAFIA to detect clusters more precisely, providing better resolution than CLIQUE, especially in complex datasets. Additionally, experiments indicate that MAFIA is the most scalable algorithm when it comes to handling large data sizes. However, this scalability comes at a cost; MAFIA is highly sensitive to input parameters, such as grid size and density thresholds, and requires careful tuning to achieve optimal results. While it offers more precise boundary detection than CLIQUE, its dependence on parameters can lead to inconsistent performance across different datasets.
+MAFIA builds upon CLIQUE by introducing adaptive grid sizes, allowing it to dynamically adjust grid boundaries based on data density. This modification enables MAFIA to detect clusters more precisely, providing better resolution than CLIQUE, especially in complex datasets. Additionally, experiments indicate that MAFIA is the most scalable algorithm when it comes to handling large data sizes. However, even though the original paper states that it is not sensitive to input parameters, several experiments have shown that proper tuning is needed.
 
-SUBCLU, on the other hand, departs from the grid-based approach and utilizes a density-connectivity principle similar to DBSCAN. This enables it to detect clusters of arbitrary shapes, which is a significant advantage when clusters are irregular or not aligned with the axes. This was demonstrated in experiments using real datasets, where SUBCLU outperformed grid-based methods in identifying clusters with complex boundaries. However, SUBCLU’s approach, while flexible, may not be as efficient as MAFIA in terms of data size scalability, particularly for very large datasets. Despite the advantages, one main issue is its scalability in high-dimensional spaces. Since it applies DBSCAN recursively to various subspaces, it incurs a high computational cost due to the large number of range queries required. As the number of dimensions increases, the number of subspaces to be explored grows exponentially, making it computationally expensive for large datasets with many attributes. Also, the input parameters , such as $\varepsilon$ and $m$. These parameters are critical for determining the structure of clusters, but finding the right values can be difficult, especially in high-dimensional datasets where different subspaces may require different parameter settings. If the parameters are not well-tuned, SUBCLU may either miss important clusters or over-partition the data into smaller, less meaningful clusters.
+SUBCLU, on the other hand, are able to detect clusters of arbitrary shapes, which both were demonstrated using an arbitrarily shaped synthetic cluster and by two real datasets. However, SUBCLU is not as efficient as MAFIA in terms of data size scalability, particularly for very large datasets and high dimensional data sets. Also, the input parameters are critical for good clustering quality. If the parameters are not well-tuned, SUBCLU may either miss important clusters or over-partition the data into smaller, less meaningful clusters.
 
 A critical observation across these algorithms is that their performance can vary significantly depending on the data characteristics. Experiments using synthetic data show that clustering quality is highly use-case dependent, and allowing or disallowing lower-dimensional clusters can affect outcomes. Furthermore, while these synthetic experiments highlight each algorithm’s strengths, they also reveal their limitations. It is possible to generate datasets where none of these methods can identify the correct clusters, showing that subspace clustering remains a challenging problem.
 
-All three algorithms struggle with closely clustered data points, often requiring fine-tuning of parameters such as grid size in CLIQUE and MAFIA, or \( \epsilon \) and \( m \) in SUBCLU, to effectively separate clusters. This need for parameter optimization underscores the complexity of subspace clustering and the necessity for tailored solutions depending on the specific data distribution and clustering objectives.
+All three algorithms struggle with closely clustered data points, often requiring fine-tuning of the input parameters to effectively separate clusters. This need for parameter optimization underscores the complexity of subspace clustering and the necessity for tailored solutions depending on the specific data distribution and clustering objectives.
 
+"\textit{The current paradigm of subspace clustering requires the user to set parameters, and clusters that satisfy these parameters are returned. We can broadly classify the parameters into cluster parameters and algorithm parameters, where cluster parameters are used in defining the clusters and algorithm parameters are used in guiding the clustering process.}" \cite[p.~342]{sim-2012}
 
-"The clustering result can be improved in a variety of ways, from mining significant subspace clusters to using parameter-insensitive clustering approaches. In parameter-insensitive clustering, the ‘true’ subspace clusters are discovered and they are not manifestations of skewed parameter settings." \cite{sim-2012}
+"There are some weaknesses in using intervals. First, as the intervals are non-overlapping, and wrong positioning of the grids may lead to ‘truth’ subspace clusters being overlooked. Second, setting a fixed size on the intervals using $\varepsilon$ may result in poor clustering quality, as the distribution of the objects in each attribute is different."" \cite[p.~351]{sim-2012}
 
-"Overcoming parameter-sensitive subspace clustering The current paradigm of subspace clustering requires the user to set parameters, and clusters that satisfy these parameters are returned. We can broadly classify the parameters into cluster parameters and algorithm parameters, where cluster parameters are used in defining the clusters and algorithm parameters are used in guiding the clustering process." \cite{sim-2012}
+"Setting a fixed $\tau$ may degrade the clustering quality, as a high threshold leads to a small number of subspace clusters, while a low threshold leads to a large number of clusters. To circumvent this problem" \cite[p.~352]{sim-2012}
 
-"There are some weaknesses in using intervals. First, as the intervals are non-overlapping, and wrong positioning of the grids may lead to ‘truth’ subspace clusters being overlooked. Second, setting a ﬁxed size on the intervals using $\varepsilon$ may result in poor clustering quality, as the distribution of the objects in each attribute is different."" \cite{sim-2012}
+"The cluster is sensitive to the tuning parameters. If wrong $\tau$ and $\varepsilon$ are set, actual dense units may be overlooked." \cite[p.~352]{sim-2012}
 
-"Setting a ﬁxed $\tau$ may degrade the clustering quality, as a high threshold leads to a small number of subspace clusters, while a low threshold leads to a large number of clusters. To circumvent this problem" \cite{sim-2012}
-
-"The cluster is sensitive to the tuning parameters. If wrong $\tau$ and $\varepsilon$ are set, actual dense units may be overlooked." \cite{sim-2012}
-
-"The parameters are difﬁcult to set as they are non-meaningful and non-intuitive. A possible remedy is to try a range of parameter settings, and check for results which are stable in a particular range of parameter settings. Another possible option is to adjust the parameter setting until a suitable number of clusters is obtained." \cite{sim-2012}
-
-
-"Kailing et al. (2004) proposed density based subspace clustering, which overcomes the problems of grid based subspace clustering by dropping the usage of grids. Moreover, it is able to mine arbitrarily shaped subspace clusters in the hyperplane of the dataset." \cite{sim-2012}
+"The parameters are difficult to set as they are non-meaningful and non-intuitive. A possible remedy is to try a range of parameter settings, and check for results which are stable in a particular range of parameter settings. Another possible option is to adjust the parameter setting until a suitable number of clusters is obtained." \cite[p.~352]{sim-2012}
 
 
 Both can have overlapping clusters meaning that the same data point can belong to multiple clusters.
@@ -31,14 +25,14 @@ Both can have overlapping clusters meaning that the same data point can belong t
 Could be interesting to investigate other algorithms like top-down approaches, amd other approaches which do not use the monotonicity property.
 
 
-"It has been observed that a global density threshold, as used by SUBCLU and the grid-based approaches, leads to a bias towards a certain dimensionality: A tighter threshold which is able to separate clusters from noise well in low dimensions tends to lose clusters in higher dimensions, whereas a more relaxed threshold which is able to detect high-dimensional clusters will produce an 
+"It has been observed that a global density threshold, as used by SUBCLU and the grid-based approaches, leads to a bias towards a certain dimensionality: A tighter threshold which is able to separate clusters from noise well in low dimensions tends to lose clusters in higher dimensions, whereas a more relaxed threshold which is able to detect high-dimensional clusters will produce an
 excessive amount of low-dimensional clusters. Therefore, the dimensionality" \cite[p.1:16]{kriegel-2009}
 
 "we find most bottom-up approaches free from the locality assumption. Instead, they pursue a complete enumeration approach facilitated by an APRIORI-like search. Thus, they remain in $O(2^d)$ in the worst case." \cite[p.1:41]{kriegel-2009}
 
 
-"In order to apply an efﬁcient bottom-up subspace search approach similar to frequent itemset mining, the cluster criterion must implement the downward closure property. Existing bottom-up approaches usually rely on a density-based cluster criterion. A limitation of most of these approaches is that the cluster criterion must use a ﬁxed density threshold for all subspaces in order to implement the downward closure property, although the use of a global density threshold is obviously contraindicated by the observations made before concerning the curse of dimensionality. As a consequence, the same globally deﬁned density threshold applies for subspaces of considerably different dimensionality, although a signiﬁcant cluster in a higher-dimensional subspace will most likely be less dense (in an absolute sense) than a signiﬁcant cluster in a lower-dimensional subspace. In order to ﬁnd higher-dimensional subspaces, the user has to deﬁne a 
-less strict density threshold. This, however, would produce a lot of meaningless lower-dimensional clusters. On the other hand, choosing a more strict density threshold, the reported lower-dimensional clusters will probably be more meaningful but higher-dimensional subspace clusters will most likely be lost. The 
+"In order to apply an efficient bottom-up subspace search approach similar to frequent itemset mining, the cluster criterion must implement the downward closure property. Existing bottom-up approaches usually rely on a density-based cluster criterion. A limitation of most of these approaches is that the cluster criterion must use a ﬁxed density threshold for all subspaces in order to implement the downward closure property, although the use of a global density threshold is obviously contraindicated by the observations made before concerning the curse of dimensionality. As a consequence, the same globally deﬁned density threshold applies for subspaces of considerably different dimensionality, although a signiﬁcant cluster in a higher-dimensional subspace will most likely be less dense (in an absolute sense) than a signiﬁcant cluster in a lower-dimensional subspace. In order to ﬁnd higher-dimensional subspaces, the user has to deﬁne a
+less strict density threshold. This, however, would produce a lot of meaningless lower-dimensional clusters. On the other hand, choosing a more strict density threshold, the reported lower-dimensional clusters will probably be more meaningful but higher-dimensional subspace clusters will most likely be lost. The
 problem of applying a global density threshold obviously also affects the detection of meaningful subspace cluster hierarchies where lower-dimensional clusters are embedded in higher-dimensional ones. If the dimensionality of these" \cite[p.1:48]{kriegel-2009}
 
 "The different heuristics and assumptions (refer to Section 5.1) and the different problems tackled (refer to Section 5.2) should always be kept in sight. In most cases, whether the trade-off between efﬁciency and effectiveness is tolerable will depend on the application." \cite[p.1:50]{kriegel-2009}
@@ -47,20 +41,20 @@ problem of applying a global density threshold obviously also affects the detect
 
 The main parameter for the density threshold can be hard to set across all dimensions. Adaptive grids try to solve this problem by adjusting the grid size based on the density of the data.
 
-A big drawback of using SUBCLU is its use of DBSCAN, which takes logaritmic time for each range query if spatial index is used \cite[p.~473]{han-2011}. SUBCLU runs DBSCAN on each $d$ subspace initially, and then recursively run DBSCAN on each candidate subspace. This can be very time-consuming for high-dimensional data. 
+A big drawback of using SUBCLU is its use of DBSCAN, which takes logaritmic time for each range query if spatial index is used \cite[p.~473]{han-2011}. SUBCLU runs DBSCAN on each $d$ subspace initially, and then recursively run DBSCAN on each candidate subspace. This can be very time-consuming for high-dimensional data.
 
 "application to synthetic data that has been designed with knowledge about the internal structure" \cite{zimek-2024}
 
 Internal vs. External Evaluation
-- “internal” evaluation (≈ unsupervised)
-   - how well does the result fit to the data, assuming certain properties of “good” clusters
-   - cohesion/separation (e.g., TD2, Silhouette)
-   - similarity matrix (correlation, visualization)
-   - basic assumption: the clustering algorithm is suitable for the given problem
-- “external” evaluation (≈ supervised)
-   - validation of the result independent of the algorithm, given some ground truth e.g., how well could the clustering algorithm identify known classes of objects
-   - assumption: application to new data from the same domain and a similar problem set-up might perform similarly well
-   - problem: the algorithm is “punished” if it actually detects “novel” patterns
+- "internal" evaluation (~ unsupervised)
+- how well does the result fit to the data, assuming certain properties of “good” clusters
+- cohesion/separation (e.g., TD2, Silhouette)
+- similarity matrix (correlation, visualization)
+- basic assumption: the clustering algorithm is suitable for the given problem
+- "external" evaluation (~ supervised)
+- validation of the result independent of the algorithm, given some ground truth e.g., how well could the clustering algorithm identify known classes of objects
+- assumption: application to new data from the same domain and a similar problem set-up might perform similarly well
+- problem: the algorithm is “punished” if it actually detects “novel” patterns
 
 Internal Evaluation
 - fundamental problem: is the algorithm suitable to tackle the given task?
@@ -75,17 +69,17 @@ Relationship Between Validity Index and Type of Clustering
 - cohesion and separation are suitable for convex cluster models, not for arbitrarily shaped clusters as possibly found, e.g., by density-based approaches
 
 Problems of Internal Evaluation
-- suitability of the clustering model for the given dataset? 
+- suitability of the clustering model for the given dataset?
 - determinism?
 - determine k?
 - comparison of different cluster models?
 - connection between objective function of the clustering model and the validation index?
 
 External Evaluation
-- based on a mapping between clustering-result and given clusters (classes), i.e., some ground truth or gold standard why not simply confusion matrix? 
- - two basic approaches:
- - mapping of sets of objects
- - comparison of assignments for pairs of objects (“pair counting”)
+- based on a mapping between clustering-result and given clusters (classes), i.e., some ground truth or gold standard why not simply confusion matrix?
+- two basic approaches:
+- mapping of sets of objects
+- comparison of assignments for pairs of objects (“pair counting”)
 - assessment of agreement between given and found partitions
 - mapping of sets: mainly information theoretic measures
 - pair counting: many measures available, e.g. also measures known from classification (such as F-measure etc.)
