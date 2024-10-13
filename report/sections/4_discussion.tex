@@ -46,3 +46,6 @@ problem of applying a global density threshold obviously also affects the detect
 "The user must use their domain knowledge to help select and tune these settings." \cite{parsons-2-2004}
 
 The main parameter for the density threshold can be hard to set across all dimensions. Adaptive grids try to solve this problem by adjusting the grid size based on the density of the data.
+
+A big drawback of using SUBCLU is its use of DBSCAN, which takes logaritmic time for each range query if spatial index is used \cite[p.~473]{han-2011}. SUBCLU runs DBSCAN on each $d$ subspace initially, and then recursively run DBSCAN on each candidate subspace. This can be very time-consuming for high-dimensional data. 
+
