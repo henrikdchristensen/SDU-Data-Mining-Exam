@@ -1,11 +1,11 @@
-## Main files to ignore ##
+## src files to ignore ##
 src/mdcgen
 src/datasets/**/*.txt
 src/datasets/**/*.csv
 src/artificalCluster-1.0.jar
 *.asv
 
-## LaTeX ##
+## LaTeX to ignore ##
 *.aux
 *.log
 *.out
@@ -14,3 +14,4 @@ src/artificalCluster-1.0.jar
 *.blg
 *.fdb_latexmk
 *.fls
+*.synctex.gz(busy)
