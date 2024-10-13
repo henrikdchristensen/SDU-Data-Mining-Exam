@@ -49,3 +49,50 @@ The main parameter for the density threshold can be hard to set across all dimen
 
 A big drawback of using SUBCLU is its use of DBSCAN, which takes logaritmic time for each range query if spatial index is used \cite[p.~473]{han-2011}. SUBCLU runs DBSCAN on each $d$ subspace initially, and then recursively run DBSCAN on each candidate subspace. This can be very time-consuming for high-dimensional data. 
 
+"application to synthetic data that has been designed with knowledge about the internal structure" \cite{zimek-2024}
+
+Internal vs. External Evaluation
+- “internal” evaluation (≈ unsupervised)
+   - how well does the result fit to the data, assuming certain properties of “good” clusters
+   - cohesion/separation (e.g., TD2, Silhouette)
+   - similarity matrix (correlation, visualization)
+   - basic assumption: the clustering algorithm is suitable for the given problem
+- “external” evaluation (≈ supervised)
+   - validation of the result independent of the algorithm, given some ground truth e.g., how well could the clustering algorithm identify known classes of objects
+   - assumption: application to new data from the same domain and a similar problem set-up might perform similarly well
+   - problem: the algorithm is “punished” if it actually detects “novel” patterns
+
+Internal Evaluation
+- fundamental problem: is the algorithm suitable to tackle the given task?
+- decision (needs to precede the application) w.r.t. basic properties of the algorithm and expected characteristics of the data and clusters
+
+Cohesion and Separation
+- cohesion: how strong are the cluster objects connected (how similar, pairwise, to each other)?
+- separation: how well is a cluster separated from other clusters?
+- validation index: suitable combination of cohesion and separation
+
+Relationship Between Validity Index and Type of Clustering
+- cohesion and separation are suitable for convex cluster models, not for arbitrarily shaped clusters as possibly found, e.g., by density-based approaches
+
+Problems of Internal Evaluation
+- suitability of the clustering model for the given dataset? 
+- determinism?
+- determine k?
+- comparison of different cluster models?
+- connection between objective function of the clustering model and the validation index?
+
+External Evaluation
+- based on a mapping between clustering-result and given clusters (classes), i.e., some ground truth or gold standard why not simply confusion matrix? 
+ - two basic approaches:
+ - mapping of sets of objects
+ - comparison of assignments for pairs of objects (“pair counting”)
+- assessment of agreement between given and found partitions
+- mapping of sets: mainly information theoretic measures
+- pair counting: many measures available, e.g. also measures known from classification (such as F-measure etc.)
+
+The advantage of entropy-based measures is that they do not require a one-to-one matching of sets (clusters/classes).
+
+Problems of External Evaluation
+- It might establish a wrong bias on the development of  clustering algorithms if they are designed with a bias to discover known classes again [Färber et al., 2010].
+- Class structure and cluster structure in a dataset need not be the same [Färber et al., 2010].
+- Data can contain different “truths”, so different clustering results might be equally meaningful and interesting [Zimek and Vreeken, 2015, Bailey, 2013].
