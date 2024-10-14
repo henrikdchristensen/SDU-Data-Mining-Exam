@@ -1,11 +1,7 @@
 \section{Evaluation}
-The evaluation of the clustering algorithms was performed on a Intel i7 1.70 GHz processor (12th gen.) with 16 GB of RAM running Windows 11.
+The evaluation of the clustering algorithms was performed on a Intel i7 1.70 GHz processor (12th gen.) with 16 GB of RAM running Windows 11. The evaluation of MAFIA was performed using \textit{GPUMAFIA} \cite{gpumafia}, which was installed on a virtual machine running Ubuntu, configured with 4 CPUs and 4 GB of RAM. CLIQUE and SUBCLU were evaluated on the main machine using \textit{ELKI} \cite{elki}. Thus, one should be careful to compare the results of the three algorithms directly, as the execution environment and the implementation may affect the results. However, the growth rate and their clustering of the data sets can be compared.
 
-The evaluation of MAFIA was performed using \textit{GPUMAFIA} \cite{gpumafia}, which was installed on a virtual machine running Ubuntu, configured with 4 CPUs and 4 GB of RAM.
-
-CLIQUE and SUBCLU were evaluated on the main machine using \textit{ELKI} \cite{elki}. Thus, one should be careful to compare the results of the three algorithms directly, as the execution environment and the implementation may affect the results. However, the growth rate and their clustering of the data sets can be compared.
-
-Throughout the different experiments, a range of input parameters for the three algorithms were tested. The best found were selected to show their best performance on the corresponding data set. The complete evaluation project can be found in the GitHub repository: \url{https://github.com/henrikdchristensen/SDU-Data-Mining-Exam}. Here, additional experiments as well as detailed descriptions of how to generate the data sets and how to install and use GPUMAFIA is described.
+Throughout the different experiments, a range of input parameters for the three algorithms were tested. The best found were selected to show their best performance on the corresponding data set. The complete evaluation project can be found in the GitHub repository: \url{https://github.com/henrikdchristensen/SDU-Data-Mining-Exam}. Here, additional experiments as well as detailed descriptions of how to reproduce the experiments.
 
 \subsection{Data set generation}
 The aim for the synthetic data generation was to be able to produce similar data sets as discussed in both \cite{clique,mafia}. That is, axis-parallel, hyper-rectangles, non-overlapping clusters in different subspaces. This was achieved using \textit{MDCGen} \cite{mdcgen}, where different sizes and different densities of the clusters could be set, as well as which attributes for each cluster that acts as noise for which values at random is selected from a uniform distribution over the entire range of the attribute.
@@ -27,12 +23,12 @@ Similar growth rates is achieved for all algorithms as their original papers \ci
 
 Note that, the $minPts$ in SUBCLU were scaled linearly with the data set size, as the clusters in the dateset were of fixed sizes, which means, by increasing the data set size, the density of the clusters increases linearly. However, for the other two algorithms, there was no need to scale any of input parameters, as they relies on the density of the units for the total amount of records.
 \begin{figure}[H]
-    \vspace*{-0.5cm}
+    \vspace*{-0.7cm}
     \centering
     \includegraphics[scale=0.45]{figures/dataset_size_vs_runtime.png}
     \caption{Scalability with increasing data set size.}
     \label{fig:dataset_size_vs_runtime}
-    \vspace*{-0.5cm}
+    \vspace*{-0.7cm}
 \end{figure}
 
 \subsubsection{Clustering Accuracy}
@@ -42,17 +38,17 @@ The first dataset was a 2-dimensional set containing a single cluster, shaped li
 
 % The results can be seen in Figure \ref{fig:accuracy_plus}, where only the best cluster found by MAFIA is illustrated. The effect of adaptive grid sizes, clearly shows that MAFIA is more flexible than CLIQUE in such cases.
 % \begin{figure}[H]
-%     \vspace*{-0.5cm}
+%     \vspace*{-0.7cm}
 %     \centering
 %     \includegraphics[scale=0.35]{figures/accuracy_plus.png}
 %     \caption{A single plus-shaped cluster.}
 %     \label{fig:accuracy_plus}
-%     \vspace*{-0.5cm}
+%     \vspace*{-0.7cm}
 % \end{figure}
 
 The second data was a 10-dimensional set containing 2 clusters embedded in a different 4 dimensional subspace. 10\% of the data was added as noise records. Similar data set as the one used in \cite{mafia}. The results can be seen in Figure \ref{fig:accuracy_2clusters}. Here, MAFIA was able to detect the clusters without any additional lower-dimensional clusters. In contrast, CLIQUE reports some overlapping clusters and some of the noise records as clusters. SUBCLU detects also the two clusters, but reports many lower-dimensional clusters and noise records as clusters as well.
 \begin{figure}[H]
-    \vspace*{-0.5cm}
+    \vspace*{-0.7cm}
     \centering
     \subfloat[][CLIQUE]{%
         \includegraphics[width=0.3\textwidth]{figures/accuracy_2clusters/clique.png}\label{fig:accuracy_2clusters_clique}}~~~~
@@ -62,12 +58,12 @@ The second data was a 10-dimensional set containing 2 clusters embedded in a dif
         \includegraphics[width=0.3\textwidth]{figures/accuracy_2clusters/SUBCLU.png}\label{fig:accuracy_2clusters_subclu}}
     \caption{Two clusters in 4 different subspaces.}
     \label{fig:accuracy_2clusters}
-    \vspace*{-0.5cm}
+    \vspace*{-0.7cm}
 \end{figure}
 
 The third data set were a 2-dimensional set containing a single cluster formed as a Bezier curve with 10\% noise added to the data set. As expected, SUBCLU outperforms the other two algorithms as can be seen in Figure \ref{fig:accuracy_bezier}. MAFIA and CLIQUE only partly detects the cluster and reports additional clusters and noise records as clusters. The result of SUBCLU demonstrates its use of neighborhood of points.
 \begin{figure}[H]
-    \vspace*{-0.5cm}
+    \vspace*{-0.7cm}
     \centering
     \subfloat[][CLIQUE]{\includegraphics[width=0.3\textwidth]{figures/accuracy_bezier/clique.png}\label{fig:accuracy_bezier_clique}}~~~~
     \subfloat[][MAFIA]{\includegraphics[width=0.3\textwidth]{figures/accuracy_bezier/MAFIA.png}\label{fig:accuracy_bezier_mafia}}~~~~
@@ -79,22 +75,22 @@ The third data set were a 2-dimensional set containing a single cluster formed a
 \subsubsection{Scalability with Data Dimensionality and Cluster Dimensionality}
 Figure \ref{fig:data_dimensionality_vs_runtime} shows the scalability of the CLIQUE and MAFIA with increasing data set dimensionality. The data set contains 1 mio. records with 3 clusters in 5 different subspaces and 10\% noise records. The data set dimensionality ranges from 10 to 100 dimensions. However, CLIQUE was only able to handle half of the dimensions, as the PC constantly freezes -- probably due to the high memory consumption. In \cite{clique} it is noted that CLIQUE has a quadratic growth rate in terms of data set dimensionality. To investigate this even further, one could try to reduce the memory consumption by having a smaller amount of records in the data set. Nevertheless, the experiment clearly shows that MAFIA is the most scalable algorithm of the two.
 \begin{figure}[H]
-    \vspace*{-0.5cm}
+    \vspace*{-0.7cm}
     \centering
     \includegraphics[scale=0.45]{figures/data_dimensionality_vs_runtime.png}
     \caption{Scalability with increasing data set dimensionality.}
     \label{fig:data_dimensionality_vs_runtime}
-    \vspace*{-0.5cm}
+    \vspace*{-0.7cm}
 \end{figure}
 
 Figure \ref{fig:cluster_dimensionality_vs_runtime} shows the scalability of the CLIQUE and MAFIA with increasing cluster dimensionality. A 20-dimensional data set, containing 500k records with a single cluster were used. The cluster was embedded in increasing number of dimensions starting from 10 to 100 dimensions. 10\% of the records was added as noise. The data set is similar to the one used in \cite{mafia}. Both algorithms heavily suffers from the increasing cluster dimensionality, however, MAFIA is able to handle a higher dimensional cluster than CLIQUE. The reason why both algorithms depends on the cluster dimensionality is due to the fact that a higher cluster dimensionality results in a large subspace coverage and a large number of CDUs. In other words, each pass on the data needs to populate a large number of CDUs, and increase in cluster dimensionality also increases the number of passes over the data set.
 \begin{figure}[H]
-    \vspace*{-0.5cm}
+    \vspace*{-0.7cm}
     \centering
     \includegraphics[scale=0.45]{figures/cluster_dimensionality_vs_runtime.png}
     \caption{Scalability with increasing cluster dimensionality.}
     \label{fig:cluster_dimensionality_vs_runtime}
-    \vspace*{-0.5cm}
+    \vspace*{-0.7cm}
 \end{figure}
 
 The results reported for SUBCLU in \cite{subclu} were also tried to be replicated, however, the PC constantly freezes -- probably due to the high memory consumption. In future work, it would be interesting to investigate this further maybe starting with a very small data set.
@@ -102,11 +98,12 @@ The results reported for SUBCLU in \cite{subclu} were also tried to be replicate
 % \subsection{Sensitive analysis for MAFIA}
 % From \cite{mafia}, MAFIA should not be sensitive to the choice of $\alpha$. Therefore, a 20-dimensional data set with 1mio data points with 10\% noise were set to evaluate this. $\beta$ was fixed to 35\%, and $\alpha$ was ranging from 0.8 to 5.2 in step size of 0.4. The results can be seen in Figure \ref{fig:sensitivity_alpha}. From the results one could again draw the conclusion that MAFIA is not very sensitive to the $\alpha$ parameter. However, during evaluation of different types of data sets, many different values $\alpha$ was used to detect the right clusters. Also, different $\beta$ values as well as maximum number of windows was needed to be set properly to achieve meaningful results.
 % \begin{figure}[H]
-%     \vspace*{-0.5cm}
+%     \vspace*{-0.7cm}
 %     \centering
 %     \includegraphics[scale=0.45]{figures/sensitivity_alpha.png}
 %     \caption{Sensitivity of $\alpha$ for MAFIA.}
 %     \label{fig:sensitivity_alpha}
+%     \vspace*{-0.7cm}
 % \end{figure}
 
 \subsubsection{Real Data Sets}
@@ -114,7 +111,7 @@ Two real-world data sets are used to evaluate the algorithms in a more realistic
 
 The first data set is the well-known \textit{Iris} data set \cite{iris}, which contains 150 records of 3 different iris types (e.g. Setosa, Versicolor, Virginica). The data set contains 4 features (sepal length, sepal width, petal length and petal width). All three algorithms successfully generated clusters using their corresponding approach. However, the overall cluster quality was not optimal.
 % \begin{figure}[H]
-%     \vspace*{-0.5cm}
+%     \vspace*{-0.7cm}
 %     \centering
 %     \subfloat[][Original]{\includegraphics[width=0.3\textwidth]{figures/real_world_iris/orig.png}\label{fig:real_world_iris_orig}}~~~~
 %     \subfloat[][CLIQUE]{\includegraphics[width=0.3\textwidth]{figures/real_world_iris/CLIQUE.png}\label{fig:real_world_iris_clique}}\\
@@ -122,15 +119,16 @@ The first data set is the well-known \textit{Iris} data set \cite{iris}, which c
 %     \subfloat[][SUBCLU]{\includegraphics[width=0.3\textwidth]{figures/real_world_iris/SUBCLU.png}\label{fig:real_world_iris_subclu}}
 %     \caption{Iris data set.}
 %     \label{fig:real_world_iris}
-%     \vspace*{-0.5cm}
+%     \vspace*{-0.7cm}
 % \end{figure}
 
 The second data set is the \textit{Date Fruit} data set \cite{date-fruit}, which contains 898 records of 7 different date fruit types (e.g. Barhee, Deglet Nour, Sukkary, Rotab). These were obtained via a computer vision, where 34 features (e.g shape and color) was extracted. Only SUBCLU were able to produce clusters somewhat close to the true clusters but also finds many lower-dimensional clusters and small clusters. CLIQUE and MAFIA either produced way too many clusters or close to one single cluster.
 % \begin{figure}[H]
-%     \vspace*{-0.5cm}
+%     \vspace*{-0.7cm}
 %     \centering
 %     \subfloat[][Original]{\includegraphics[width=0.3\textwidth]{figures/real_world_date_fruit/orig.png}\label{fig:real_world_date_fruit_orig}}~~~~
 %     \subfloat[][SUBCLU]{\includegraphics[width=0.3\textwidth]{figures/real_world_date_fruit/SUBCLU.png}\label{fig:real_world_date_fruit_subclu}}
 %     \caption{Date Fruit data set.}
 %     \label{fig:real_world_date_fruit}
+%     \vspace*{-0.7cm}
 % \end{figure}
