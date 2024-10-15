@@ -96,6 +96,9 @@ Download release 0.8.0 from [here](https://elki-project.github.io/releases/) (ve
 
 ELKI does not provide the MAFIA algorithm, but you can use the `-algorithm algorithm.NullAlgorithm` to visualize pre-clustered data from other programs.
 
+### ID coloumn
+Note that the ID coloumn first resets after closing the GUI.
+
 ---
 
 ## GPUMAFIA
@@ -208,3 +211,10 @@ The primary evaluation of the MAFIA algorithm, along with comparisons to CLIQUE 
    - Linux: TeX Live
 2.  Install pandoc (https://pandoc.org/), make sure it can be found using `pandoc --version`. Otherwise, try to re-open terminal.
 3.  Convert to pdf by running the following command from the `src` folder: `jupyter nbconvert --to pdf evaluation.ipynb`. 
+
+
+# Using CUDA
+Run `conda install cuda -c nvidia` in conda enviroment (takes some time). Check it is installed using `nvcc -V`
+
+# Handling noise
+Be aware that labels for noise should be labeled "noise" to be handled correctly during evaluation metrics. Same is used in ELKI.

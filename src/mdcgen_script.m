@@ -7,10 +7,9 @@ addpath(genpath('mdcgen/mdcgen/src/'));
 
 %% General settings
 maxPlotPoints = 10000;  % max. number of points to plot, if max is reached, we sample
-maxPlotDims = 10; % only plot first 10 dimensions (if available)
 
 %% Dataset directory
-dir = 'datasets/mdcgen/cluster_dim/5d/';
+dir = 'datasets/test/';
 
 %% Load config
 configFile = strcat(dir, 'config.mat');
@@ -22,6 +21,8 @@ load(configFile, 'config');
 
 %% Copy config
 c = config;
+
+maxPlotDims = min(10, c.nDimensions);
 
 %% Set seed
 rng(c.seed);
@@ -123,6 +124,9 @@ if c.plot
             xlabel('dim1');
             ylabel('dim2');
             zlabel('dim3');
+            xlim([0 1]);
+            ylim([0 1]);
+            zlim([0 1]);
             legend('show');
         otherwise % >3d
             [h, ax] = plotmatrix(dataToPlot);

@@ -34,7 +34,7 @@ Note that, the $minPts$ in SUBCLU were scaled linearly with the data set size, a
 \subsubsection{Clustering Accuracy}
 Many different synthetic data sets were generated to test the clustering accuracy of the algorithms.
 
-The first dataset was a 2-dimensional set containing a single cluster, shaped like a skewed plus-sign, with 10\% noise added. Results similar to those reported in \cite{mafia} were achieved. MAFIA successfully identified a single cluster that accurately captured the cluster’s boundaries. In contrast, CLIQUE was unable to report a single cluster that correctly detected the borders. However, MAFIA’s accuracy comes at a cost, as it also identifies many lower-dimensional clusters.
+The first dataset was a 2-dimensional set containing a single cluster, shaped like a skewed plus-sign, with 10\% noise added. Results similar to those reported in \cite{mafia} were achieved. MAFIA successfully identified a single cluster that accurately captured the cluster's boundaries. In contrast, CLIQUE was unable to report a single cluster that correctly detected the borders. However, MAFIA's accuracy comes at a cost, as it also identifies many lower-dimensional clusters.
 
 % The results can be seen in Figure \ref{fig:accuracy_plus}, where only the best cluster found by MAFIA is illustrated. The effect of adaptive grid sizes, clearly shows that MAFIA is more flexible than CLIQUE in such cases.
 % \begin{figure}[H]
@@ -93,7 +93,7 @@ Figure \ref{fig:cluster_dimensionality_vs_runtime} shows the scalability of the 
     \vspace*{-0.7cm}
 \end{figure}
 
-The results reported for SUBCLU in \cite{subclu} were also tried to be replicated, however, the PC constantly freezes -- probably due to the high memory consumption. In future work, it would be interesting to investigate this further maybe starting with a very small data set.
+The results reported for SUBCLU in \cite{subclu} were also tried to be replicated, however, the PC constantly freezes -- probably due to the high memory consumption. In future work, it would be interesting to investigate this further maybe using a very small data set.
 
 % \subsection{Sensitive analysis for MAFIA}
 % From \cite{mafia}, MAFIA should not be sensitive to the choice of $\alpha$. Therefore, a 20-dimensional data set with 1mio data points with 10\% noise were set to evaluate this. $\beta$ was fixed to 35\%, and $\alpha$ was ranging from 0.8 to 5.2 in step size of 0.4. The results can be seen in Figure \ref{fig:sensitivity_alpha}. From the results one could again draw the conclusion that MAFIA is not very sensitive to the $\alpha$ parameter. However, during evaluation of different types of data sets, many different values $\alpha$ was used to detect the right clusters. Also, different $\beta$ values as well as maximum number of windows was needed to be set properly to achieve meaningful results.
