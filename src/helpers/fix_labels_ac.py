@@ -3,8 +3,8 @@ import os
 import random
 import argparse
 
-# Function to normalize the data within [0, 1] range for each dimension
 def normalize_data(data):
+    """Normalize the data to the range [0, 1] for each dimension."""
     # Convert data to float and calculate min and max for each dimension
     data = [[float(value) for value in row] for row in data]
     num_dimensions = len(data[0]) - 1  # Exclude the last column (label)
@@ -22,7 +22,7 @@ def normalize_data(data):
         if max_val > min_val:
             normalized_dimension = [(x - min_val) / (max_val - min_val) for x in dimension_values]
         else:
-            normalized_dimension = [0.5] * len(dimension_values)  # Handle case where all values are the same
+            normalized_dimension = [0.5] * len(dimension_values)  # handle case where all values are the same
         normalized_data.append(normalized_dimension)
 
     # Add labels back to the normalized data
@@ -31,9 +31,8 @@ def normalize_data(data):
     # Transpose back to the original row format
     return list(zip(*normalized_data))
 
-# Function to process the file and add noise points within [0, 1], rounded to 3 decimals
-def add_noise(file_path, noise_percentage, include_labels):
-    # Set this variable to either '\t' for tab or ' ' for space separation in the TXT file
+def normalize_data_modify_labels_and_add_noise(file_path, noise_percentage, include_labels):
+    """Add noise points to a dataset and write to a new .txt file."""
     txt_separator = ' '  # '\t' for tab-based txt file or ' ' for space-separated file
 
     with open(file_path, 'r') as infile:
@@ -72,30 +71,29 @@ def add_noise(file_path, noise_percentage, include_labels):
             noise_point.append('noise')  # Add the "noise" label as the last column
         noise_points.append(noise_point)
 
-    # Generate new file name for the TXT output file
+    # Generate new file name for the txt output file
     base_name = os.path.splitext(file_path)[0]
     new_txt_output_path = base_name + '_fixed.txt'
 
-    # Write the original + noise data to the TXT file
+    # Write the original + noise data to the txt file
     with open(new_txt_output_path, 'w') as txtfile:
         for row in data:
-            # Join the columns and write to TXT file
+            # Join the columns and write to txt file
             row = [str(value) for value in row]
             txtfile.write(txt_separator.join(row) + '\n')
 
-        # Now add noise points to the TXT file
+        # Now add noise points to the txt file
         for noise_point in noise_points:
             txtfile.write(txt_separator.join(noise_point) + '\n')
 
     print(f"Added {noise_percentage*100}% noise points successfully to '{new_txt_output_path}'.")
 
-# Main block to handle command-line arguments
+# Main
 if __name__ == "__main__":
-    # Set up argument parsing
     parser = argparse.ArgumentParser(description="Add noise to a dataset.")
-    parser.add_argument("file_path", help="The path to the input TXT file")
-    parser.add_argument("noise_percentage", type=float, help="The percentage of noise points to add (0 to 1)")
-    parser.add_argument("-l", "--labels", action="store_true", help="Include 'label' prefix in the labels column")
+    parser.add_argument("file_path", help="The path to the input txt file")
+    parser.add_argument("noise_percentage", type=float, help="Percentage of noise points to add (0 to 1)")
+    parser.add_argument("-l", "--labels", action="store_true", help="Include (true) 'label' prefix in the labels column")
 
     args = parser.parse_args()
 
@@ -104,10 +102,5 @@ if __name__ == "__main__":
         print("Error: noise_percentage must be a valid number between 0 and 1.")
         sys.exit(1)
 
-    # Check if the file exists
-    if not os.path.isfile(args.file_path):
-        print(f"Error: The file '{args.file_path}' does not exist.")
-        sys.exit(1)
-
     # Call the function to process the file
-    add_noise(args.file_path, args.noise_percentage, args.labels)
+    normalize_data_modify_labels_and_add_noise(args.file_path, args.noise_percentage, args.labels)

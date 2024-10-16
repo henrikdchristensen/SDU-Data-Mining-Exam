@@ -1,7 +1,8 @@
+import sys
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 
-def normalize_column_wise(file_path, output_file):
+def normalize(file_path, output_file):
     # Load the data using pandas
     data = pd.read_csv(file_path, delimiter='\t', header=None)
     
@@ -20,7 +21,7 @@ def normalize_column_wise(file_path, output_file):
     # Save the normalized data to a new file
     normalized_data.to_csv(output_file, sep='\t', header=False, index=False, float_format='%.6f')
 
-# Example usage
-input_file = 'data_labels.txt'  # Replace with your input file path
-output_file = 'data_labels_normalized.txt'  # Replace with your desired output file path
-normalize_column_wise(input_file, output_file)
+if __name__ == "__main__":
+    input_file = sys.argv[1] # file name as argument (must be txt file)
+    output_file = input_file.split('.')[0] + '_normalized.txt' # strip the file extension from the input file name and add '_normalized.txt' to create the output file name
+    normalize(input_file, output_file)
